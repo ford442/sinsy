@@ -1,4 +1,5 @@
 AM_CPPFLAGS = -I @top_srcdir@/include \
+              -I @top_srcdir@/hts_engine_API/src/include \
               -I converter \
               -I hts_engine_API \
               -I japanese \
@@ -117,7 +118,15 @@ libSinsy_a_SOURCES = Sinsy.cpp \
                      ./xml/XmlReader.h \
                      ./xml/XmlWriter.cpp \
                      ./xml/XmlWriter.h \
-                     ./xml/xml_tags.h
+                     ./xml/xml_tags.h \
+                     @top_srcdir@/hts_engine_API/src/lib/HTS_audio.c \
+                     @top_srcdir@/hts_engine_API/src/lib/HTS_engine.c \
+                     @top_srcdir@/hts_engine_API/src/lib/HTS_gstream.c \
+                     @top_srcdir@/hts_engine_API/src/lib/HTS_label.c \
+                     @top_srcdir@/hts_engine_API/src/lib/HTS_model.c \
+                     @top_srcdir@/hts_engine_API/src/lib/HTS_pstream.c \
+                     @top_srcdir@/hts_engine_API/src/lib/HTS_sstream.c \
+                     @top_srcdir@/hts_engine_API/src/lib/HTS_vocoder.c
 
 DISTCLEANFILES = *.log *.out *~ */*~
 
