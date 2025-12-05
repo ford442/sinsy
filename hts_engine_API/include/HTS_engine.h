@@ -61,13 +61,13 @@ HTS_ENGINE_H_START;
 
 typedef char HTS_Boolean;
 
-#ifndef TRUE
-#define TRUE  1
-#endif                          /* !TRUE */
+#ifndef HTS_TRUE
+#define HTS_TRUE  1
+#endif                          /* !HTS_TRUE */
 
-#ifndef FALSE
-#define FALSE 0
-#endif                          /* !FALSE */
+#ifndef HTS_FALSE
+#define HTS_FALSE 0
+#endif                          /* !HTS_FALSE */
 
 #ifndef HTS_NODATA
 #define HTS_NODATA (-1.0e+10)
@@ -75,7 +75,9 @@ typedef char HTS_Boolean;
 
 /* copyright ------------------------------------------------------- */
 
-#define HTS_COPYRIGHT "The HMM-Based Speech Synthesis Engine \"hts_engine API\"\nVersion 1.10 (http://hts-engine.sourceforge.net/)\nCopyright (C) 2001-2015 Nagoya Institute of Technology\n              2001-2008 Tokyo Institute of Technology\nAll rights reserved.\n"
+#define HTS_VERSION "1.10"
+#define HTS_DATE "2001-2015"
+#define HTS_COPYRIGHT "The HMM-Based Speech Synthesis Engine \"hts_engine API\"\nVersion " HTS_VERSION " (" HTS_DATE ")\nCopyright (C) 2001-2015 Nagoya Institute of Technology\n              2001-2008 Tokyo Institute of Technology\nAll rights reserved.\n"
 
 /* audio ----------------------------------------------------------- */
 
