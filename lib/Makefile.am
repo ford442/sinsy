@@ -1,5 +1,5 @@
 AM_CPPFLAGS = -I ../include \
-              -I ../hts_engine_API/src/include \
+              -I ../hts_engine_API/include \
               -I converter \
               -I hts_engine_API \
               -I japanese \
@@ -72,6 +72,7 @@ libSinsy_a_SOURCES = Sinsy.cpp \
                      ./score/Pitch.h \
                      ./score/ScorePosition.cpp \
                      ./score/ScorePosition.h \
+
                      ./score/Slur.cpp \
                      ./score/Slur.h \
                      ./score/Syllabic.cpp \
@@ -119,14 +120,14 @@ libSinsy_a_SOURCES = Sinsy.cpp \
                      ./xml/XmlWriter.cpp \
                      ./xml/XmlWriter.h \
                      ./xml/xml_tags.h \
-                     ../hts_engine_API/src/lib/HTS_audio.c \
-                     ../hts_engine_API/src/lib/HTS_engine.c \
-                     ../hts_engine_API/src/lib/HTS_gstream.c \
-                     ../hts_engine_API/src/lib/HTS_label.c \
-                     ../hts_engine_API/src/lib/HTS_model.c \
-                     ../hts_engine_API/src/lib/HTS_pstream.c \
-                     ../hts_engine_API/src/lib/HTS_sstream.c \
-                     ../hts_engine_API/src/lib/HTS_vocoder.c
+                     ../hts_engine_API/lib/HTS_audio.c \
+                     ../hts_engine_API/lib/HTS_engine.c \
+                     ../hts_engine_API/lib/HTS_gstream.c \
+                     ../hts_engine_API/lib/HTS_label.c \
+                     ../hts_engine_API/lib/HTS_model.c \
+                     ../hts_engine_API/lib/HTS_pstream.c \
+                     ../hts_engine_API/lib/HTS_sstream.c \
+                     ../hts_engine_API/lib/HTS_vocoder.c
 
 DISTCLEANFILES = *.log *.out *~ */*~
 
