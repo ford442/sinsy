@@ -126,7 +126,8 @@ libSinsy_a_SOURCES = Sinsy.cpp \
                      ../hts_engine_API/lib/HTS_model.c \
                      ../hts_engine_API/lib/HTS_pstream.c \
                      ../hts_engine_API/lib/HTS_sstream.c \
-                     ../hts_engine_API/lib/HTS_vocoder.c
+                     ../hts_engine_API/lib/HTS_vocoder.c \
+                     ../hts_engine_API/lib/HTS_misc.c
 
 DISTCLEANFILES = *.log *.out *~ */*~
 

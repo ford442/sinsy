@@ -78,7 +78,7 @@ void usage()
    std::cout << "    MusicXML file" << std::endl;
 }
 
-int main(int argc, char **argv)
+int sinsy_main(int argc, char **argv)
 {
    if (argc < 2) {
       usage();
@@ -162,4 +162,8 @@ int main(int argc, char **argv)
    sinsy.synthesize(condition);
 
    return 0;
+}
+
+int main(int argc, char **argv) {
+    return sinsy_main(argc, argv);
 }
