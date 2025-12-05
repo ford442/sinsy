@@ -62,6 +62,12 @@ HTS_MISC_C_START;
 #include "HTS_engine.h"
 #include "HTS_hidden.h"
 
+typedef struct _HTS_Data {
+   unsigned char *data;
+   size_t size;
+   size_t index;
+} HTS_Data;
+
 /* HTS_show_copyright: show copyright */
 void HTS_show_copyright(void)
 {
@@ -105,11 +111,45 @@ HTS_File *HTS_fopen_from_fn(const char *name, const char *opt)
    return fp;
 }
 
+/* HTS_fopen_from_fp: wrapper for fopen from file pointer */
+HTS_File *HTS_fopen_from_fp(HTS_File * fp, size_t size)
+{
+    HTS_File *new_fp = (HTS_File *) HTS_calloc(1, sizeof(HTS_File));
+    HTS_Data *data = (HTS_Data *) HTS_calloc(1, sizeof(HTS_Data));
+    data->data = (unsigned char *) HTS_calloc(size, sizeof(unsigned char));
+    data->size = HTS_fread_little_endian(data->data, 1, size, fp);
+    data->index = 0;
+    new_fp->type = 2; /* allocated internally */
+    new_fp->pointer = data;
+    return new_fp;
+}
+
+/* HTS_fopen_from_data: wrapper for fopen from data */
+HTS_File *HTS_fopen_from_data(void *d, size_t size)
+{
+    HTS_File *fp = (HTS_File *) HTS_calloc(1, sizeof(HTS_File));
+    HTS_Data *data = (HTS_Data *) HTS_calloc(1, sizeof(HTS_Data));
+    data->data = (unsigned char *) d;
+    data->size = size;
+    data->index = 0;
+    fp->type = 3; /* data is not owned */
+    fp->pointer = data;
+    return fp;
+}
+
 /* HTS_fclose: wrapper for fclose */
 void HTS_fclose(HTS_File * fp)
 {
-   if (fp->type == 1)
+   if (fp == NULL) return;
+   if (fp->type == 1) {
       fclose((FILE *) fp->pointer);
+   } else if (fp->type == 2) {
+      HTS_Data *data = (HTS_Data *) fp->pointer;
+      free(data->data);
+      free(data);
+   } else if (fp->type == 3) {
+      free(fp->pointer);
+   }
    free(fp);
 }
 
@@ -118,7 +158,10 @@ int HTS_fgetc(HTS_File * fp)
 {
    if (fp->type == 1)
       return fgetc((FILE *) fp->pointer);
-   return 0;
+   HTS_Data *data = (HTS_Data *) fp->pointer;
+   if (data->index >= data->size)
+      return EOF;
+   return data->data[data->index++];
 }
 
 /* HTS_feof: wrapper for feof */
@@ -126,45 +169,54 @@ int HTS_feof(HTS_File * fp)
 {
    if (fp->type == 1)
       return feof((FILE *) fp->pointer);
-   return 0;
+   HTS_Data *data = (HTS_Data *) fp->pointer;
+   return data->index >= data->size;
 }
 
 /* HTS_fseek: wrapper for fseek */
 int HTS_fseek(HTS_File * fp, long offset, int origin)
 {
-   if (fp->type == 1)
-      return fseek((FILE *) fp->pointer, offset, origin);
-   return 0;
+    if (fp->type == 1)
+        return fseek((FILE *) fp->pointer, offset, origin);
+    HTS_Data *data = (HTS_Data *) fp->pointer;
+    if (origin == SEEK_SET)
+        data->index = offset;
+    else if (origin == SEEK_CUR)
+        data->index += offset;
+    else if (origin == SEEK_END)
+        data->index = data->size + offset;
+    return 0;
 }
 
 /* HTS_ftell: wrapper for ftell */
 size_t HTS_ftell(HTS_File * fp)
 {
+    if (fp->type == 1) {
 #if defined(__ANDROID__) || defined(__EMSCRIPTEN__)
-   if (fp->type == 1)
-      return (size_t) ftell((FILE *) fp->pointer);
+        return (size_t) ftell((FILE *) fp->pointer);
 #else
-   fpos_t pos;
-
-   if (fp->type == 1) {
-      if (fgetpos((FILE *) fp->pointer, &pos) != 0)
-         return 0;
-#ifdef __FreeBSD__
-      return (size_t) pos;
-#else
-      return (size_t) pos.__pos;
-#endif                          /* __FreeBSD__ */
-   }
-#endif                          /* __ANDROID__ || __EMSCRIPTEN__ */
-   return 0;
+        fpos_t pos;
+        if (fgetpos((FILE *) fp->pointer, &pos) != 0) return 0;
+        return (size_t) pos.__pos;
+#endif
+    }
+    HTS_Data *data = (HTS_Data *) fp->pointer;
+    return data->index;
 }
 
 /* HTS_fread_little_endian: fread with byteswap */
 size_t HTS_fread_little_endian(void *buf, size_t size, size_t n, HTS_File * fp)
 {
-   if (fp->type == 1)
-      return fread(buf, size, n, (FILE *) fp->pointer);
-   return 0;
+    if (fp->type == 1)
+        return fread(buf, size, n, (FILE *) fp->pointer);
+    HTS_Data *data = (HTS_Data *) fp->pointer;
+    size_t requested_bytes = size * n;
+    if (data->index + requested_bytes > data->size) {
+        requested_bytes = data->size - data->index;
+    }
+    memcpy(buf, data->data + data->index, requested_bytes);
+    data->index += requested_bytes;
+    return requested_bytes / size;
 }
 
 /* HTS_fwrite_little_endian: fwrite with byteswap */
@@ -314,6 +366,25 @@ char *HTS_strdup(const char *string)
 /* HTS_free: wrapper for free */
 void HTS_free(void *p)
 {
+   free(p);
+}
+
+/* HTS_alloc_matrix: allocate double matrix */
+double **HTS_alloc_matrix(size_t x, size_t y)
+{
+   size_t i;
+   double **p = (double **) HTS_calloc(x, sizeof(double *));
+   for (i = 0; i < x; i++)
+      p[i] = (double *) HTS_calloc(y, sizeof(double));
+   return p;
+}
+
+/* HTS_free_matrix: free double matrix */
+void HTS_free_matrix(double **p, size_t x)
+{
+   size_t i;
+   for (i = 0; i < x; i++)
+      free(p[i]);
    free(p);
 }
 
