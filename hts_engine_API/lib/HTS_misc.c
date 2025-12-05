@@ -59,17 +59,7 @@ HTS_MISC_C_START;
 #include <string.h>             /* for str*() */
 #include <stdarg.h>             /* for va_* */
 
-#include "HTS_engine.h"
-
-#if defined(HTS_EMBEDDED)
-typedef struct _HTS_File {
-   unsigned char *data;
-   size_t size;
-   size_t index;
-} HTS_File;
-#else
-typedef FILE HTS_File;
-#endif
+#include "HTS_hidden.h"
 
 /* HTS_show_copyright: show copyright */
 void HTS_show_copyright(void)
@@ -239,9 +229,9 @@ void HTS_fflush(HTS_File * fp)
 }
 
 /* HTS_fseek: wrapper for fseek */
-int HTS_fseek(HTS_File * fp, long offset, int whence)
+int HTS_fseek(HTS_File * fp, long offset, int origin)
 {
-   int result = fseek(fp, offset, whence);
+   int result = fseek(fp, offset, origin);
 
    if (result != 0) {
       HTS_error(1, "HTS_fseek: Failed to change stream position.\n");
