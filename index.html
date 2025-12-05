@@ -5,12 +5,67 @@
     <title>Sinsy</title>
   </head>
   <body>
+    <button id="run-button" disabled>Synthesize</button>
+    <div id="output"></div>
     <script>
+      const runButton = document.getElementById('run-button');
+      const outputElement = document.getElementById('output');
+
       var Module = {
         onRuntimeInitialized: function() {
           console.log('Sinsy loaded');
+          runButton.disabled = false;
+        },
+        print: function(text) {
+          console.log(text);
+        },
+        printErr: function(text) {
+          console.error(text);
         }
       };
+
+      runButton.addEventListener('click', () => {
+        const args = [
+          '/sinsy.js',
+          '-x', '/dic',
+          '-m', '/voices/nitech_jp_song070_f001.htsvoice',
+          '-o', 'output.wav',
+          '/scores/Ave_Maria_D839_-_Schubert_-_Solo_Piano_Arrg..mxl'
+        ];
+        const sinsyMain = Module.cwrap('sinsy_main', 'number', ['number', 'number']);
+        const argc = args.length;
+        const argv = Module._malloc(argc * 4);
+        args.forEach((arg, index) => {
+          const argPtr = Module._malloc(arg.length + 1);
+          Module.stringToUTF8(arg, argPtr, arg.length + 1);
+          Module.setValue(argv + index * 4, argPtr, 'i32');
+        });
+
+        const result = sinsyMain(argc, argv);
+        console.log(`sinsy_main returned ${result}`);
+
+        // Free memory
+        for (let i = 0; i < argc; i++) {
+          Module._free(Module.getValue(argv + i * 4, 'i32'));
+        }
+        Module._free(argv);
+
+        // Create a download link for the output file
+        try {
+          const wavData = Module.FS.readFile('output.wav');
+          const blob = new Blob([wavData], { type: 'audio/wav' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'output.wav';
+          a.textContent = 'Download output.wav';
+          outputElement.innerHTML = '';
+          outputElement.appendChild(a);
+        } catch (e) {
+          console.error(e);
+          outputElement.textContent = 'Error creating download link. See console for details.';
+        }
+      });
     </script>
     <script src="sinsy.js"></script>
   </body>
