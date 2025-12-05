@@ -3,7 +3,7 @@
   "version": "0.92.0",
   "private": true,
   "scripts": {
-    "build": "emconfigure ./configure && emmake make",
+    "build": "source /content/build_space/emsdk/emsdk_env.sh && emconfigure ./configure && emmake make",
     "dev": "npm run build && http-server -c-1 ."
   },
   "devDependencies": {
