@@ -89,155 +89,60 @@ void HTS_error(int error, const char *message, ...)
 {
    va_list arg;
 
-   HTS_fflush(stdout);
-   HTS_fprintf(stderr, "\nError: ");
+   fflush(stdout);
+   fprintf(stderr, "\nError: ");
    va_start(arg, message);
-   HTS_vfprintf(stderr, message, arg);
+   vfprintf(stderr, message, arg);
    va_end(arg);
-   HTS_fflush(stderr);
+   fflush(stderr);
 
    if (error > 0)
       exit(error);
 }
 
-/* HTS_fopen: wrapper for fopen */
-HTS_File *HTS_fopen(const char *path, const char *mode)
+/* HTS_fopen_from_fn: wrapper for fopen */
+HTS_File *HTS_fopen_from_fn(const char *name, const char *opt)
 {
-   HTS_File *fp = fopen(path, mode);
-
-   if (fp == NULL) {
-      HTS_error(1, "HTS_fopen: Cannot open %s.\n", path);
+   HTS_File *fp = (HTS_File *) calloc(1, sizeof(HTS_File));
+   fp->type = 1;
+   fp->pointer = fopen(name, opt);
+   if (fp->pointer == NULL) {
+      HTS_error(1, "HTS_fopen: Cannot open %s.\n", name);
+      free(fp);
       return NULL;
    }
-
    return fp;
 }
 
 /* HTS_fclose: wrapper for fclose */
 void HTS_fclose(HTS_File * fp)
 {
-   fclose(fp);
+   if (fp->type == 1)
+      fclose((FILE *) fp->pointer);
+   free(fp);
 }
 
 /* HTS_fgetc: wrapper for fgetc */
 int HTS_fgetc(HTS_File * fp)
 {
-   int c = fgetc(fp);
-
-   if (feof(fp)) {
-      HTS_error(1, "HTS_fgetc: Unexpected end of file.\n");
-   }
-
-   return c;
+   if (fp->type == 1)
+      return fgetc((FILE *) fp->pointer);
+   return 0;
 }
 
-/* HTS_fgets: wrapper for fgets */
-char *HTS_fgets(char *buff, int n, HTS_File * fp)
+/* HTS_feof: wrapper for feof */
+int HTS_feof(HTS_File * fp)
 {
-   char *s = fgets(buff, n, fp);
-
-   if (s == NULL && feof(fp))
-      return NULL;
-
-   if (s == NULL && !feof(fp)) {
-      HTS_error(1, "HTS_fgets: Failed to read from stream.\n");
-      return NULL;
-   }
-
-   return s;
-}
-
-/* HTS_fread: wrapper for fread */
-size_t HTS_fread(void *ptr, size_t size, size_t nmemb, HTS_File * fp)
-{
-   size_t count = fread(ptr, size, nmemb, fp);
-
-   if (count != nmemb) {
-      HTS_error(1, "HTS_fread: Unexpected end of file.\n");
-      return 0;
-   }
-
-   return count;
-}
-
-/* HTS_fwrite: wrapper for fwrite */
-size_t HTS_fwrite(const void *ptr, size_t size, size_t nmemb, HTS_File * fp)
-{
-   size_t count = fwrite(ptr, size, nmemb, fp);
-
-   if (count != nmemb) {
-      HTS_error(1, "HTS_fwrite: Cannot write to stream.\n");
-      return 0;
-   }
-
-   return count;
-}
-
-/* HTS_fwrite_little_endian: fwrite with byteswap */
-size_t HTS_fwrite_little_endian(const void *ptr, size_t size, size_t nmemb, HTS_File * fp)
-{
-   size_t i, j;
-   const char *p = (const char *) ptr;
-   char c;
-   size_t count = 0;
-
-   if (HTS_is_big_endian()) {
-      for (i = 0; i < nmemb; i++) {
-         for (j = 0; j < size; j++) {
-            c = p[i * size + size - 1 - j];
-            count += fwrite(&c, 1, 1, fp);
-         }
-      }
-      count /= size;
-   } else {
-      count = fwrite(ptr, size, nmemb, fp);
-   }
-
-   if (count != nmemb) {
-      HTS_error(1, "HTS_fwrite_little_endian: Cannot write to stream.\n");
-      return 0;
-   }
-
-   return count;
-}
-
-/* HTS_fprintf: wrapper for fprintf */
-int HTS_fprintf(HTS_File * fp, const char *message, ...)
-{
-   va_list arg;
-   int result;
-
-   va_start(arg, message);
-   result = vfprintf(fp, message, arg);
-   va_end(arg);
-
-   return result;
-}
-
-/* HTS_vfprintf: wrapper for vfprintf */
-int HTS_vfprintf(HTS_File * fp, const char *message, va_list arg)
-{
-   int result = vfprintf(fp, message, arg);
-
-   return result;
-}
-
-/* HTS_fflush: wrapper for fflush */
-void HTS_fflush(HTS_File * fp)
-{
-   fflush(fp);
+   if (fp->type == 1)
+      return feof((FILE *) fp->pointer);
+   return 0;
 }
 
 /* HTS_fseek: wrapper for fseek */
 int HTS_fseek(HTS_File * fp, long offset, int origin)
 {
-   int result = fseek(fp, offset, origin);
-
-   if (result != 0) {
-      HTS_error(1, "HTS_fseek: Failed to change stream position.\n");
-      return 1;
-   }
-
+   if (fp->type == 1)
+      return fseek((FILE *) fp->pointer, offset, origin);
    return 0;
 }
 
@@ -245,49 +150,117 @@ int HTS_fseek(HTS_File * fp, long offset, int origin)
 size_t HTS_ftell(HTS_File * fp)
 {
 #if defined(__ANDROID__) || defined(__EMSCRIPTEN__)
-   return (size_t) ftell(fp);
+   if (fp->type == 1)
+      return (size_t) ftell((FILE *) fp->pointer);
 #else
    fpos_t pos;
 
-   if (fgetpos(fp, &pos) != 0)
-      return 0;
+   if (fp->type == 1) {
+      if (fgetpos((FILE *) fp->pointer, &pos) != 0)
+         return 0;
 #ifdef __FreeBSD__
-   return (size_t) pos;
+      return (size_t) pos;
 #else
-   return (size_t) pos.__pos;
+      return (size_t) pos.__pos;
 #endif                          /* __FreeBSD__ */
+   }
 #endif                          /* __ANDROID__ || __EMSCRIPTEN__ */
+   return 0;
+}
+
+/* HTS_fread_little_endian: fread with byteswap */
+size_t HTS_fread_little_endian(void *buf, size_t size, size_t n, HTS_File * fp)
+{
+   if (fp->type == 1)
+      return fread(buf, size, n, (FILE *) fp->pointer);
+   return 0;
+}
+
+/* HTS_fwrite_little_endian: fwrite with byteswap */
+size_t HTS_fwrite_little_endian(const void *buf, size_t size, size_t n, FILE * fp)
+{
+   return fwrite(buf, size, n, fp);
+}
+
+/* HTS_get_pattern_token: get pattern token (single/double quote can be used) */
+HTS_Boolean HTS_get_pattern_token(HTS_File * fp, char *buff)
+{
+   char c;
+   HTS_Boolean squote = HTS_FALSE, dquote = HTS_FALSE;
+   size_t i = 0;
+
+   c = HTS_fgetc(fp);
+   while (HTS_feof(fp) != 1 && (c == ' ' || c == '\n'))
+      c = HTS_fgetc(fp);
+
+   if (c == '\'') {
+      c = HTS_fgetc(fp);
+      squote = HTS_TRUE;
+   } else if (c == '\"') {
+      c = HTS_fgetc(fp);
+      dquote = HTS_TRUE;
+   }
+
+   if (HTS_feof(fp))
+      return HTS_FALSE;
+
+   while (HTS_feof(fp) != 1) {
+      buff[i++] = c;
+      c = HTS_fgetc(fp);
+      if (squote && c == '\'')
+         break;
+      if (dquote && c == '\"')
+         break;
+      if (!squote && !dquote && (c == ' ' || c == '\n'))
+         break;
+   }
+   buff[i] = '\0';
+   return HTS_TRUE;
+}
+
+/* HTS_get_token_from_fp: get token from file pointer (separators are space,tab,line break) */
+HTS_Boolean HTS_get_token_from_fp(HTS_File * fp, char *buff)
+{
+   char c;
+   size_t i = 0;
+
+   c = HTS_fgetc(fp);
+   while (!HTS_feof(fp) && (c == ' ' || c == '\n' || c == '\t'))
+      c = HTS_fgetc(fp);
+
+   if (HTS_feof(fp))
+      return HTS_FALSE;
+
+   while (!HTS_feof(fp) && c != ' ' && c != '\n' && c != '\t') {
+      buff[i++] = c;
+      c = HTS_fgetc(fp);
+   }
+   buff[i] = '\0';
+   return HTS_TRUE;
 }
 
 /* HTS_calloc: wrapper for calloc */
-void *HTS_calloc(size_t nmemb, size_t size)
+void *HTS_calloc(const size_t num, const size_t size)
 {
-   void *ptr = calloc(nmemb, size);
-
-   if (ptr == NULL) {
+   void *p = calloc(num, size);
+   if (p == NULL)
       HTS_error(1, "HTS_calloc: Cannot allocate memory.\n");
-      return NULL;
-   }
-
-   return ptr;
-}
-
-/* HTS_free: wrapper for free */
-void HTS_free(void *ptr)
-{
-   free(ptr);
+   return p;
 }
 
 /* HTS_strdup: wrapper for strdup */
-char *HTS_strdup(const char *s)
+char *HTS_strdup(const char *string)
 {
-   char *p = strdup(s);
-
-   if (p == NULL) {
+   char *p = strdup(string);
+   if (p == NULL)
       HTS_error(1, "HTS_strdup: Cannot duplicate string.\n");
-      return NULL;
-   }
    return p;
+}
+
+/* HTS_free: wrapper for free */
+void HTS_free(void *p)
+{
+   free(p);
 }
 
 /* HTS_is_big_endian: check endian */
