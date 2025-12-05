@@ -66,23 +66,13 @@ HTS_MISC_C_START;
 void HTS_show_copyright(void)
 {
    fprintf(stdout, "\n");
-   fprintf(stdout, "The HMM-Based Speech Synthesis Engine \"hts_engine API\"\n");
-   fprintf(stdout, "Version %s (%s)\n", HTS_VERSION, HTS_DATE);
-   fprintf(stdout, "Copyright (C) 2001-2015 Nagoya Institute of Technology\n");
-   fprintf(stdout, "              2001-2008 Tokyo Institute of Technology\n");
-   fprintf(stdout, "All rights reserved.\n");
-   fprintf(stdout, "\n");
+   fprintf(stdout, "%s", HTS_COPYRIGHT);
 }
 
 /* HTS_get_copyright: get copyright */
 const char *HTS_get_copyright(void)
 {
-   const char *str = "The HMM-Based Speech Synthesis Engine \"hts_engine API\" "
-       "Version " HTS_VERSION " (" HTS_DATE "), "
-       "Copyright (C) 2001-2015 Nagoya Institute of Technology, "
-       "2001-2008 Tokyo Institute of Technology, " "All rights reserved.";
-
-   return str;
+   return HTS_COPYRIGHT;
 }
 
 /* HTS_error: output error message */
@@ -187,7 +177,7 @@ size_t HTS_fwrite_little_endian(const void *buf, size_t size, size_t n, FILE * f
 HTS_Boolean HTS_get_pattern_token(HTS_File * fp, char *buff)
 {
    char c;
-   HTS_Boolean squote = HTS_FALSE, dquote = HTS_FALSE;
+   HTS_Boolean squote = FALSE, dquote = FALSE;
    size_t i = 0;
 
    c = HTS_fgetc(fp);
@@ -196,14 +186,14 @@ HTS_Boolean HTS_get_pattern_token(HTS_File * fp, char *buff)
 
    if (c == '\'') {
       c = HTS_fgetc(fp);
-      squote = HTS_TRUE;
+      squote = TRUE;
    } else if (c == '\"') {
       c = HTS_fgetc(fp);
-      dquote = HTS_TRUE;
+      dquote = TRUE;
    }
 
    if (HTS_feof(fp))
-      return HTS_FALSE;
+      return FALSE;
 
    while (HTS_feof(fp) != 1) {
       buff[i++] = c;
@@ -216,7 +206,7 @@ HTS_Boolean HTS_get_pattern_token(HTS_File * fp, char *buff)
          break;
    }
    buff[i] = '\0';
-   return HTS_TRUE;
+   return TRUE;
 }
 
 /* HTS_get_token_from_fp: get token from file pointer (separators are space,tab,line break) */
@@ -230,14 +220,14 @@ HTS_Boolean HTS_get_token_from_fp(HTS_File * fp, char *buff)
       c = HTS_fgetc(fp);
 
    if (HTS_feof(fp))
-      return HTS_FALSE;
+      return FALSE;
 
    while (!HTS_feof(fp) && c != ' ' && c != '\n' && c != '\t') {
       buff[i++] = c;
       c = HTS_fgetc(fp);
    }
    buff[i] = '\0';
-   return HTS_TRUE;
+   return TRUE;
 }
 
 /* HTS_calloc: wrapper for calloc */
@@ -271,9 +261,9 @@ HTS_Boolean HTS_is_big_endian(void)
    char *p = (char *) &i;
 
    if (p[0] == 1)
-      return HTS_FALSE;
+      return FALSE;
    else
-      return HTS_TRUE;
+      return TRUE;
 }
 
 HTS_MISC_C_END;
