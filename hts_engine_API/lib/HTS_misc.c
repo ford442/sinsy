@@ -230,6 +230,69 @@ HTS_Boolean HTS_get_token_from_fp(HTS_File * fp, char *buff)
    return TRUE;
 }
 
+/* HTS_get_token_from_fp_with_separator: get token from file pointer with specified separator */
+HTS_Boolean HTS_get_token_from_fp_with_separator(HTS_File * fp, char *buff, char separator)
+{
+   char c;
+   size_t i = 0;
+
+   c = HTS_fgetc(fp);
+   while (!HTS_feof(fp) && c == separator)
+      c = HTS_fgetc(fp);
+
+   if (HTS_feof(fp))
+      return FALSE;
+
+   while (!HTS_feof(fp) && c != separator) {
+      buff[i++] = c;
+      c = HTS_fgetc(fp);
+   }
+   buff[i] = '\0';
+   return TRUE;
+}
+
+/* HTS_get_token_from_string: get token from string (separator are space,tab,line break) */
+HTS_Boolean HTS_get_token_from_string(const char *string, size_t * index, char *buff)
+{
+   char c;
+   size_t i = 0;
+
+   c = string[(*index)++];
+   while (c != '\0' && (c == ' ' || c == '\n' || c == '\t'))
+      c = string[(*index)++];
+
+   if (c == '\0')
+      return FALSE;
+
+   while (c != '\0' && c != ' ' && c != '\n' && c != '\t') {
+      buff[i++] = c;
+      c = string[(*index)++];
+   }
+   buff[i] = '\0';
+   return TRUE;
+}
+
+/* HTS_get_token_from_string_with_separator: get token from string with specified separator */
+HTS_Boolean HTS_get_token_from_string_with_separator(const char *str, size_t * index, char *buff, char separator)
+{
+   char c;
+   size_t i = 0;
+
+   c = str[(*index)++];
+   while (c != '\0' && c == separator)
+      c = str[(*index)++];
+
+   if (c == '\0')
+      return FALSE;
+
+   while (c != '\0' && c != separator) {
+      buff[i++] = c;
+      c = str[(*index)++];
+   }
+   buff[i] = '\0';
+   return TRUE;
+}
+
 /* HTS_calloc: wrapper for calloc */
 void *HTS_calloc(const size_t num, const size_t size)
 {
