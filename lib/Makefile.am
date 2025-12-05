@@ -6,8 +6,7 @@ AM_CPPFLAGS = -I @top_srcdir@/include \
               -I score \
               -I temporary \
               -I util \
-              -I xml \
-              -I @HTS_ENGINE_HEADER_DIR@
+              -I xml
 
 lib_LIBRARIES = libSinsy.a
 
