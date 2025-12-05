@@ -72,7 +72,6 @@ libSinsy_a_SOURCES = Sinsy.cpp \
                      ./score/Pitch.h \
                      ./score/ScorePosition.cpp \
                      ./score/ScorePosition.h \
-
                      ./score/Slur.cpp \
                      ./score/Slur.h \
                      ./score/Syllabic.cpp \
