@@ -7,6 +7,7 @@ AM_INIT_AUTOMAKE(subdir-objects)
 
 # Checks for C compiler
 AC_PROG_CXX
+AC_SUBST([CXXFLAGS], ["-std=c++11"])
 AM_PROG_CC_C_O
 AC_PROG_INSTALL
 AC_PROG_RANLIB
