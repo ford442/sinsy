@@ -32,23 +32,8 @@
           '-o', 'output.wav',
           '/scores/Ave_Maria_D839_-_Schubert_-_Solo_Piano_Arrg..mxl'
         ];
-        const sinsyMain = Module.cwrap('sinsy_main', 'number', ['number', 'number']);
-        const argc = args.length;
-        const argv = Module._malloc(argc * 4);
-        args.forEach((arg, index) => {
-          const argPtr = Module._malloc(arg.length + 1);
-          Module.stringToUTF8(arg, argPtr, arg.length + 1);
-          Module.setValue(argv + index * 4, argPtr, 'i32');
-        });
-
-        const result = sinsyMain(argc, argv);
-        console.log(`sinsy_main returned ${result}`);
-
-        // Free memory
-        for (let i = 0; i < argc; i++) {
-          Module._free(Module.getValue(argv + i * 4, 'i32'));
-        }
-        Module._free(argv);
+        
+        Module.callMain(args);
 
         // Create a download link for the output file
         try {
