@@ -2,4 +2,4 @@
 chmod +x configure
 autoreconf -i
 emconfigure ./configure
-emmake make
+emmake make -j55
