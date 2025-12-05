@@ -59,18 +59,19 @@ HTS_MISC_C_START;
 #include <string.h>             /* for str*() */
 #include <stdarg.h>             /* for va_* */
 
+#include "HTS_engine.h"
 #include "HTS_hidden.h"
 
 /* HTS_show_copyright: show copyright */
 void HTS_show_copyright(void)
 {
-   HTS_fprintf(stdout, "\n");
-   HTS_fprintf(stdout, "The HMM-Based Speech Synthesis Engine \"hts_engine API\"\n");
-   HTS_fprintf(stdout, "Version %s (%s)\n", HTS_VERSION, HTS_DATE);
-   HTS_fprintf(stdout, "Copyright (C) 2001-2015 Nagoya Institute of Technology\n");
-   HTS_fprintf(stdout, "              2001-2008 Tokyo Institute of Technology\n");
-   HTS_fprintf(stdout, "All rights reserved.\n");
-   HTS_fprintf(stdout, "\n");
+   fprintf(stdout, "\n");
+   fprintf(stdout, "The HMM-Based Speech Synthesis Engine \"hts_engine API\"\n");
+   fprintf(stdout, "Version %s (%s)\n", HTS_VERSION, HTS_DATE);
+   fprintf(stdout, "Copyright (C) 2001-2015 Nagoya Institute of Technology\n");
+   fprintf(stdout, "              2001-2008 Tokyo Institute of Technology\n");
+   fprintf(stdout, "All rights reserved.\n");
+   fprintf(stdout, "\n");
 }
 
 /* HTS_get_copyright: get copyright */
