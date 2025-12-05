@@ -59,7 +59,17 @@ HTS_MISC_C_START;
 #include <string.h>             /* for str*() */
 #include <stdarg.h>             /* for va_* */
 
-#include "HTS_hidden.h"
+#include "HTS_engine.h"
+
+#if defined(HTS_EMBEDDED)
+typedef struct _HTS_File {
+   unsigned char *data;
+   size_t size;
+   size_t index;
+} HTS_File;
+#else
+typedef FILE HTS_File;
+#endif
 
 /* HTS_show_copyright: show copyright */
 void HTS_show_copyright(void)
@@ -85,7 +95,7 @@ const char *HTS_get_copyright(void)
 }
 
 /* HTS_error: output error message */
-void HTS_error(int error, char *message, ...)
+void HTS_error(int error, const char *message, ...)
 {
    va_list arg;
 
@@ -101,9 +111,9 @@ void HTS_error(int error, char *message, ...)
 }
 
 /* HTS_fopen: wrapper for fopen */
-FILE *HTS_fopen(const char *path, const char *mode)
+HTS_File *HTS_fopen(const char *path, const char *mode)
 {
-   FILE *fp = fopen(path, mode);
+   HTS_File *fp = fopen(path, mode);
 
    if (fp == NULL) {
       HTS_error(1, "HTS_fopen: Cannot open %s.\n", path);
@@ -114,15 +124,15 @@ FILE *HTS_fopen(const char *path, const char *mode)
 }
 
 /* HTS_fclose: wrapper for fclose */
-void HTS_fclose(FILE * fp)
+void HTS_fclose(HTS_File * fp)
 {
    fclose(fp);
 }
 
 /* HTS_fgetc: wrapper for fgetc */
-char HTS_fgetc(FILE * fp)
+int HTS_fgetc(HTS_File * fp)
 {
-   char c = fgetc(fp);
+   int c = fgetc(fp);
 
    if (feof(fp)) {
       HTS_error(1, "HTS_fgetc: Unexpected end of file.\n");
@@ -132,7 +142,7 @@ char HTS_fgetc(FILE * fp)
 }
 
 /* HTS_fgets: wrapper for fgets */
-char *HTS_fgets(char *buff, int n, FILE * fp)
+char *HTS_fgets(char *buff, int n, HTS_File * fp)
 {
    char *s = fgets(buff, n, fp);
 
@@ -148,7 +158,7 @@ char *HTS_fgets(char *buff, int n, FILE * fp)
 }
 
 /* HTS_fread: wrapper for fread */
-size_t HTS_fread(void *ptr, size_t size, size_t nmemb, FILE * fp)
+size_t HTS_fread(void *ptr, size_t size, size_t nmemb, HTS_File * fp)
 {
    size_t count = fread(ptr, size, nmemb, fp);
 
@@ -161,7 +171,7 @@ size_t HTS_fread(void *ptr, size_t size, size_t nmemb, FILE * fp)
 }
 
 /* HTS_fwrite: wrapper for fwrite */
-size_t HTS_fwrite(const void *ptr, size_t size, size_t nmemb, FILE * fp)
+size_t HTS_fwrite(const void *ptr, size_t size, size_t nmemb, HTS_File * fp)
 {
    size_t count = fwrite(ptr, size, nmemb, fp);
 
@@ -174,7 +184,7 @@ size_t HTS_fwrite(const void *ptr, size_t size, size_t nmemb, FILE * fp)
 }
 
 /* HTS_fwrite_little_endian: fwrite with byteswap */
-size_t HTS_fwrite_little_endian(const void *ptr, size_t size, size_t nmemb, FILE * fp)
+size_t HTS_fwrite_little_endian(const void *ptr, size_t size, size_t nmemb, HTS_File * fp)
 {
    size_t i, j;
    const char *p = (const char *) ptr;
@@ -202,7 +212,7 @@ size_t HTS_fwrite_little_endian(const void *ptr, size_t size, size_t nmemb, FILE
 }
 
 /* HTS_fprintf: wrapper for fprintf */
-int HTS_fprintf(FILE * fp, const char *message, ...)
+int HTS_fprintf(HTS_File * fp, const char *message, ...)
 {
    va_list arg;
    int result;
@@ -215,7 +225,7 @@ int HTS_fprintf(FILE * fp, const char *message, ...)
 }
 
 /* HTS_vfprintf: wrapper for vfprintf */
-int HTS_vfprintf(FILE * fp, const char *message, va_list arg)
+int HTS_vfprintf(HTS_File * fp, const char *message, va_list arg)
 {
    int result = vfprintf(fp, message, arg);
 
@@ -223,13 +233,13 @@ int HTS_vfprintf(FILE * fp, const char *message, va_list arg)
 }
 
 /* HTS_fflush: wrapper for fflush */
-void HTS_fflush(FILE * fp)
+void HTS_fflush(HTS_File * fp)
 {
    fflush(fp);
 }
 
 /* HTS_fseek: wrapper for fseek */
-int HTS_fseek(FILE * fp, long offset, int whence)
+int HTS_fseek(HTS_File * fp, long offset, int whence)
 {
    int result = fseek(fp, offset, whence);
 
@@ -242,7 +252,7 @@ int HTS_fseek(FILE * fp, long offset, int whence)
 }
 
 /* HTS_ftell: wrapper for ftell */
-size_t HTS_ftell(FILE * fp)
+size_t HTS_ftell(HTS_File * fp)
 {
 #if defined(__ANDROID__) || defined(__EMSCRIPTEN__)
    return (size_t) ftell(fp);
