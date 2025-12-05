@@ -3,7 +3,7 @@
   "version": "0.92.0",
   "private": true,
   "scripts": {
-    "build": "autoreconf -i && emconfigure ./configure && emmake make",
+    "build": "emconfigure ./configure && emmake make",
     "dev": "npm run build && http-server -c-1 ."
   },
   "devDependencies": {
