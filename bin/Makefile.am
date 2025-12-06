@@ -7,7 +7,7 @@ sinsy_js_SOURCES = sinsy.cpp
 
 sinsy_js_LDADD = @top_srcdir@/lib/libSinsy.a
 
-sinsy_js_LDFLAGS = -s "EXPORTED_FUNCTIONS=['_main', '_sinsy_main']" -s "EXPORTED_RUNTIME_METHODS=['ccall', 'cwrap', 'callMain']" --preload-file R:/sinsy/dic@/dic --preload-file R:/sinsy/voices/nitech_jp_song070_f001.htsvoice@/voices/nitech_jp_song070_f001.htsvoice --preload-file R:/sinsy/scores/Ave_Maria_D839_-_Schubert_-_Solo_Piano_Arrg..mxl@/scores/Ave_Maria_D839_-_Schubert_-_Solo_Piano_Arrg..mxl
+sinsy_js_LDFLAGS = -s "EXPORTED_FUNCTIONS=['_main', '_sinsy_main']" -s "EXPORTED_RUNTIME_METHODS=['FS','ccall', 'cwrap', 'callMain']" --preload-file /content/build_space/sinsy/dic@/dic --preload-file /content/build_space/sinsy/voices/nitech_jp_song070_f001.htsvoice@/voices/nitech_jp_song070_f001.htsvoice --preload-file /content/build_space/sinsy/scores/Ave_Maria_D839_-_Schubert_-_Solo_Piano_Arrg.mxl@/scores/Ave_Maria_D839_-_Schubert_-_Solo_Piano_Arrg.mxl
 
 DISTCLEANFILES = *.log *.out *~
 
