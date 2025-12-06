@@ -98,7 +98,7 @@ bool GeneralConf::convert(const std::string& enc, ConvertableList::iterator begi
         IConvertable* convertable = *itr;
         const std::string& lyric = convertable->getLyric();
 
-        PhonemeMap::const_iterator mapItr = impl->phonemeMap.find(lyric);
+        GeneralConf::Impl::PhonemeMap::const_iterator mapItr = impl->phonemeMap.find(lyric);
         if (mapItr != impl->phonemeMap.end()) {
             convertable->addInfo(mapItr->second, "", "");
         }
