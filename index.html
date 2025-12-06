@@ -124,6 +124,23 @@ runButton.addEventListener('click', async () => {
             throw new Error('No song selected or uploaded');
           }
 
+          // Ensure /dic directory exists
+          try { Module.FS.mkdir('/dic'); } catch (e) {}
+
+          // Fetch and write dictionary files
+          const dicFiles = [
+            'japanese.utf_8.conf',
+            'japanese.utf_8.table',
+            'english.utf_8.conf',
+            'english.utf_8.table'
+          ];
+
+          for (const file of dicFiles) {
+             // We can use fetchToFS to load them. 
+             // We assume they are served at ./dic/ on the server.
+             await fetchToFS(`./dic/${file}`, `/dic/${file}`);
+          }
+
           const args = ['-w', 'e', '-x', '/dic', '-m', voicePath, '-o', 'output.wav', mxlPath];
 
           // It is good practice to check the return value (0 = success)

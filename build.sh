@@ -27,7 +27,7 @@ autoreconf -ivf
 update_config_scripts
 
 # Configure and build HTS Engine
-emconfigure ./configure --prefix="$INSTALL_DIR" --host=wasm32-unknown-emscripten
+emconfigure ./configure --prefix="$INSTALL_DIR" --host=wasm32-unknown-emscripten CFLAGS="-DWORDS_LITTLEENDIAN"
 emmake make -j$(nproc)
 emmake make install
 
@@ -42,13 +42,16 @@ update_config_scripts
 # Configure Sinsy
 # FIX: Added 'FS' and 'callMain' to EXPORTED_RUNTIME_METHODS
 # FIX: Added INVOKE_RUN=0 so it waits for your button click instead of running immediately
+# FIX: Added -DWORDS_LITTLEENDIAN to fix static sound (endianness mismatch)
 emconfigure ./configure \
   --host=wasm32-unknown-emscripten \
-  CPPFLAGS="-I$INSTALL_DIR/include"
+  CPPFLAGS="-I$INSTALL_DIR/include" \
+  CFLAGS="-DWORDS_LITTLEENDIAN"
 
 # Compile Sinsy
+# FIX: Fixed broken preload paths to use $(pwd) instead of hardcoded /content/build_space
 emmake make -j$(nproc) \
-  LDFLAGS="-L$INSTALL_DIR/lib -s EXPORTED_FUNCTIONS=[_main] -s EXPORTED_RUNTIME_METHODS=[FS,callMain] -s DISABLE_EXCEPTION_CATCHING=0 -s ALLOW_MEMORY_GROWTH=1 -s INVOKE_RUN=0 --preload-file /content/build_space/sinsy/dic@/dic --preload-file /content/build_space/sinsy/voices@/voices --preload-file /content/build_space/sinsy/scores@/scores"
+  LDFLAGS="-L$INSTALL_DIR/lib -s EXPORTED_FUNCTIONS=[_main] -s EXPORTED_RUNTIME_METHODS=[FS,callMain] -s DISABLE_EXCEPTION_CATCHING=0 -s ALLOW_MEMORY_GROWTH=1 -s INVOKE_RUN=0 --preload-file $(pwd)/dic@/dic --preload-file $(pwd)/voices@/voices --preload-file $(pwd)/scores@/scores"
 
 # Rename output to .js if needed
 if [ -f bin/sinsy ] && [ ! -f bin/sinsy.js ]; then
