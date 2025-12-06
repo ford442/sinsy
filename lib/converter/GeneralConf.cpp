@@ -54,18 +54,12 @@ class GeneralConf::Impl
 public:
     typedef std::map<std::string, std::vector<PhonemeInfo> > PhonemeMap;
     PhonemeMap phonemeMap;
+    std::string silPhoneme;
 
-    bool convert(const std::string& lyric, IConvertable& convertable) const {
-        PhonemeMap::const_iterator itr = phonemeMap.find(lyric);
-        if (itr == phonemeMap.end()) {
-            return false;
-        }
-        convertable.addInfo(itr->second, "", "");
-        return true;
-    }
+    Impl() : silPhoneme("sil") {}
 };
 
-GeneralConf::GeneralConf(const std::string& enc) : IConf(enc), impl(new Impl)
+GeneralConf::GeneralConf() : impl(new Impl)
 {
 }
 
@@ -90,16 +84,31 @@ bool GeneralConf::read(const std::string& table, const std::string& conf, const 
         std::string word = tokenizer.at(0);
         std::vector<PhonemeInfo> phonemes;
         for (size_t i = 1; i < tokenizer.size(); ++i) {
-            phonemes.push_back(PhonemeInfo(tokenizer.at(i)));
+            // Assuming all phonemes are consonants for simplicity. This can be improved.
+            phonemes.push_back(PhonemeInfo(PhonemeInfo::TYPE_CONSONANT, tokenizer.at(i)));
         }
         impl->phonemeMap[word] = phonemes;
     }
     return true;
 }
 
-bool GeneralConf::convert(const std::string& lyric, IConvertable& convertable) const
+bool GeneralConf::convert(const std::string& enc, ConvertableList::iterator begin, ConvertableList::iterator end) const
 {
-    return impl->convert(lyric, convertable);
+    for (ConvertableList::iterator itr = begin; itr != end; ++itr) {
+        IConvertable* convertable = *itr;
+        const std::string& lyric = convertable->getLyric();
+
+        PhonemeMap::const_iterator mapItr = impl->phonemeMap.find(lyric);
+        if (mapItr != impl->phonemeMap.end()) {
+            convertable->addInfo(mapItr->second, "", "");
+        }
+    }
+    return true;
+}
+
+std::string GeneralConf::getSilStr() const
+{
+    return impl->silPhoneme;
 }
 
 };

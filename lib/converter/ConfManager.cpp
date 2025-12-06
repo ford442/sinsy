@@ -109,7 +109,6 @@ void ConfManager::addJConf(IConf* conf)
 
 /*!
  set languages
- (Currently, you can set only Japanese (j))
  */
 bool ConfManager::setLanguages(const std::string& languages, const std::string& dirPath)
 {
@@ -170,7 +169,7 @@ bool ConfManager::setLanguages(const std::string& languages, const std::string& 
          const std::string CONF_UTF_8(dirPath + "/english.utf_8.conf");
          const std::string MACRON_TABLE(dirPath + "/english.macron");
 
-         IConf* uEConf = new GeneralConf(UTF_8_STRS);
+         GeneralConf* uEConf = new GeneralConf();
 
          if (!uEConf->read(TABLE_UTF_8, CONF_UTF_8, MACRON_TABLE)) {
             ERR_MSG("Cannot read English table or config or macron file : " << TABLE_UTF_8 << ", " << CONF_UTF_8);
