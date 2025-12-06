@@ -33,20 +33,19 @@ emmake make install
 cd ..
 
 echo "=== Building Sinsy ==="
-# Generate configure script
 chmod +x configure
 autoreconf -i
-
-# FIX: Update config scripts to recognize 'emscripten'
 update_config_scripts
 
-# Configure Sinsy using the local HTS engine build
+# We add LDFLAGS here with the EXPORTED_FUNCTIONS setting.
+# Note: _main is usually exported by default for executables, 
+# but explicitly adding it ensures it's available.
 emconfigure ./configure \
   --with-hts-engine-header-path="$INSTALL_DIR/include" \
   --with-hts-engine-library-path="$INSTALL_DIR/lib" \
-  --host=wasm32-unknown-emscripten
+  --host=wasm32-unknown-emscripten \
+  LDFLAGS="-s \"EXPORTED_FUNCTIONS=['_main']\" -s ALLOW_MEMORY_GROWTH=1"
 
-# Compile Sinsy
 emmake make -j$(nproc)
 
 echo "Build complete."
