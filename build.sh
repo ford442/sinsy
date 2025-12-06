@@ -59,7 +59,7 @@ emconfigure ./configure \
   --with-hts-engine-header-path="$INSTALL_DIR/include" \
   --with-hts-engine-library-path="$INSTALL_DIR/lib" \
   --host=wasm32-unknown-emscripten \
-  LDFLAGS="-s \"EXPORTED_FUNCTIONS=['_main']\" -s ALLOW_MEMORY_GROWTH=1 --preload-file dic@/dic --preload-file voices@/voices --preload-file scores@/scores"
+  LDFLAGS="-s \"EXPORTED_FUNCTIONS=['_main']\" -s ALLOW_MEMORY_GROWTH=1 -sFORCE_FILESYSTEM=1 --preload-file dic@/dic --preload-file voices@/voices --preload-file scores@/scores"
 
 # Compile Sinsy
 emmake make -j$(nproc)
