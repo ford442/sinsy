@@ -131,6 +131,34 @@ runButton.addEventListener('click', async () => {
         if (returnCode === 0) {
             try {
               const wavData = Module.FS.readFile('output.wav');
+
+              // --- Start WAV Header Debugging ---
+              console.log(`Total output.wav size: ${wavData.length} bytes`);
+              if (wavData.length >= 44) {
+                const header = wavData.subarray(0, 44);
+                const dataView = new DataView(header.buffer, header.byteOffset, header.byteLength);
+                
+                // Check RIFF/WAVE signature
+                const riffHeader = new TextDecoder('ascii').decode(header.subarray(0, 4));
+                const waveHeader = new TextDecoder('ascii').decode(header.subarray(8, 12));
+                console.log(`WAV Signature: ${riffHeader}...${waveHeader}`);
+
+                // Extract format details (little-endian)
+                const audioFormat = dataView.getUint16(20, true);
+                const numChannels = dataView.getUint16(22, true);
+                const sampleRate = dataView.getUint32(24, true);
+                const bitsPerSample = dataView.getUint16(34, true);
+
+                console.log('WAV Header Details:');
+                console.log(`  - Audio Format: ${audioFormat} (Expected: 1 for PCM)`);
+                console.log(`  - Channels: ${numChannels}`);
+                console.log(`  - Sample Rate: ${sampleRate}`);
+                console.log(`  - Bits Per Sample: ${bitsPerSample} (Expected: 16)`);
+              } else {
+                console.error('output.wav is too small to be a valid WAV file.');
+              }
+              // --- End WAV Header Debugging ---
+
               const blob = new Blob([wavData], { type: 'audio/wav' });
               const url = URL.createObjectURL(blob);
               const a = document.createElement('a');
