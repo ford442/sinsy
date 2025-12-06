@@ -1,5 +1,5 @@
 #!/bin/bash
-# source /content/build_space/emsdk/emsdk_env.sh # Uncomment if running in an environment where this is needed
+source /content/build_space/emsdk/emsdk_env.sh # Uncomment if running in an environment where this is needed
 
 # 1. Define an installation path for the Wasm dependencies
 # We use $(pwd)/wasm_install to store the compiled hts_engine_API locally
@@ -18,7 +18,7 @@ autoreconf -i
 emconfigure ./configure --prefix="$INSTALL_DIR" --host=wasm32-unknown-emscripten
 
 # Compile and install HTS engine
-emmake make -j$(nproc)
+emmake make -j55
 emmake make install
 
 cd ..
@@ -36,6 +36,6 @@ emconfigure ./configure \
   --host=wasm32-unknown-emscripten
 
 # Compile Sinsy
-emmake make -j$(nproc)
+emmake make -j55
 
 echo "Build complete."
