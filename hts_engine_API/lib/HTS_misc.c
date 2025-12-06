@@ -336,7 +336,7 @@ size_t HTS_fread_little_endian(void *buf, size_t size, size_t n, HTS_File * fp)
 size_t HTS_fwrite_little_endian(const void *buf, size_t size, size_t n, FILE * fp)
 {
 #ifdef WORDS_BIGENDIAN
-   HTS_byte_swap(buf, size, n * size);
+   HTS_byte_swap((void *)buf, size, n);
 #endif                          /* WORDS_BIGENDIAN */
    return fwrite(buf, size, n, fp);
 }
