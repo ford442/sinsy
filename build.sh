@@ -49,25 +49,20 @@ emmake make -j$(nproc)
 emmake make install
 
 cd ..
-
 echo "=== Building Sinsy ==="
-# Ensure Sinsy also has necessary files
 touch ChangeLog
-
-# Generate configure script
 chmod +x configure
 autoreconf -ivf
-
-# Update config scripts for Sinsy
 update_config_scripts
 
 # Configure Sinsy
-# LDFLAGS includes the fix for proper quoting of EXPORTED_FUNCTIONS
+# We added --preload-file flags here using local paths (dic, voices, scores)
+# mapping them to virtual paths (/dic, /voices, /scores).
 emconfigure ./configure \
   --with-hts-engine-header-path="$INSTALL_DIR/include" \
   --with-hts-engine-library-path="$INSTALL_DIR/lib" \
   --host=wasm32-unknown-emscripten \
-  LDFLAGS="-s \"EXPORTED_FUNCTIONS=['_main']\" -s ALLOW_MEMORY_GROWTH=1"
+  LDFLAGS="-s \"EXPORTED_FUNCTIONS=['_main']\" -s ALLOW_MEMORY_GROWTH=1 --preload-file dic@/dic --preload-file voices@/voices --preload-file scores@/scores"
 
 # Compile Sinsy
 emmake make -j$(nproc)
