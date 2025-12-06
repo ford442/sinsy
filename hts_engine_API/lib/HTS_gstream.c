@@ -148,6 +148,37 @@ HTS_Boolean HTS_GStreamSet_create(HTS_GStreamSet * gss, HTS_PStreamSet * pss, si
    return TRUE;
 }
 
+/* HTS_GStreamSet_recreate: re-generate speech */
+HTS_Boolean HTS_GStreamSet_recreate(HTS_GStreamSet * gss, size_t stage, HTS_Boolean use_log_gain, size_t sampling_rate, size_t fperiod, double alpha, double beta, HTS_Boolean * stop, double volume, HTS_Audio * audio)
+{
+   size_t i, j;
+   size_t msd_frame;
+   HTS_Vocoder v;
+   size_t nlpf = 0;
+   double *lpf = NULL;
+
+   /* initialize */
+   if (gss->gspeech)
+      HTS_free(gss->gspeech);
+   gss->gspeech = (double *) HTS_calloc(gss->total_nsample, sizeof(double));
+
+   /* synthesize speech waveform */
+   HTS_Vocoder_initialize(&v, gss->gstream[0].vector_length - 1, stage, use_log_gain, sampling_rate, fperiod);
+   if (gss->nstream >= 3)
+      nlpf = gss->gstream[2].vector_length;
+   for (i = 0; i < gss->total_frame && (*stop) == FALSE; i++) {
+      j = i * fperiod;
+      if (gss->nstream >= 3)
+         lpf = &gss->gstream[2].par[i][0];
+      HTS_Vocoder_synthesize(&v, gss->gstream[0].vector_length - 1, gss->gstream[1].par[i][0], &gss->gstream[0].par[i][0], nlpf, lpf, alpha, beta, volume, &gss->gspeech[j], audio);
+   }
+   HTS_Vocoder_clear(&v);
+   if (audio)
+      HTS_Audio_flush(audio);
+
+   return TRUE;
+}
+
 /* HTS_GStreamSet_get_total_nsamples: get total number of sample */
 size_t HTS_GStreamSet_get_total_nsamples(HTS_GStreamSet * gss)
 {

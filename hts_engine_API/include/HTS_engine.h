@@ -75,9 +75,7 @@ typedef char HTS_Boolean;
 
 /* copyright ------------------------------------------------------- */
 
-#define HTS_VERSION "1.10"
-#define HTS_DATE "2015/12/25"
-#define HTS_COPYRIGHT "The HMM-Based Speech Synthesis Engine \"hts_engine API\"\nVersion " HTS_VERSION " (" HTS_DATE ")\nCopyright (C) 2001-2015 Nagoya Institute of Technology\n              2001-2008 Tokyo Institute of Technology\nAll rights reserved.\n"
+#define HTS_COPYRIGHT "The HMM-Based Speech Synthesis Engine \"hts_engine API\"\nVersion 1.10 (http://hts-engine.sourceforge.net/)\nCopyright (C) 2001-2015 Nagoya Institute of Technology\n              2001-2008 Tokyo Institute of Technology\nAll rights reserved.\n"
 
 /* audio ----------------------------------------------------------- */
 
@@ -437,6 +435,9 @@ HTS_Boolean HTS_Engine_synthesize_from_fn(HTS_Engine * engine, const char *fn);
 /* HTS_Engine_synthesize_from_strings: synthesize speech from string list */
 HTS_Boolean HTS_Engine_synthesize_from_strings(HTS_Engine * engine, char **lines, size_t num_lines);
 
+/* HTS_Engine_resynthesize: synthesize speech */
+HTS_Boolean HTS_Engine_resynthesize(HTS_Engine * engine);
+
 /* HTS_Engine_generate_state_sequence_from_fn: generate state sequence from file name (1st synthesis step) */
 HTS_Boolean HTS_Engine_generate_state_sequence_from_fn(HTS_Engine * engine, const char *fn);
 
@@ -448,6 +449,9 @@ HTS_Boolean HTS_Engine_generate_parameter_sequence(HTS_Engine * engine);
 
 /* HTS_Engine_generate_sample_sequence: generate sample sequence (3rd synthesis step) */
 HTS_Boolean HTS_Engine_generate_sample_sequence(HTS_Engine * engine);
+
+/* HTS_Engine_regenerate_sample_sequence: generate sample sequence (3rd synthesis step) */
+HTS_Boolean HTS_Engine_regenerate_sample_sequence(HTS_Engine * engine);
 
 /* HTS_Engine_save_information: save trace information */
 void HTS_Engine_save_information(HTS_Engine * engine, FILE * fp);
@@ -464,8 +468,17 @@ void HTS_Engine_save_generated_speech(HTS_Engine * engine, FILE * fp);
 /* HTS_Engine_save_riff: save RIFF format file */
 void HTS_Engine_save_riff(HTS_Engine * engine, FILE * fp);
 
+/* HTS_Engine_allocate_generated_speech: save generated speech */
+size_t HTS_Engine_allocate_generated_speech(HTS_Engine * engine, short ** data);
+
+/* HTS_Engine_free_generated_speech: save generated speech */
+void HTS_Engine_free_generated_speech(HTS_Engine * engine, short ** data);
+
 /* HTS_Engine_refresh: free memory per one time synthesis */
 void HTS_Engine_refresh(HTS_Engine * engine);
+
+/* HTS_Engine_weak_refresh: free model per one time synthesis without generated parameter */
+void HTS_Engine_weak_refresh(HTS_Engine * engine);
 
 /* HTS_Engine_clear: free engine */
 void HTS_Engine_clear(HTS_Engine * engine);
