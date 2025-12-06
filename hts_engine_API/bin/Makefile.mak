@@ -12,6 +12,11 @@ all: hts_engine.exe
 hts_engine.exe : hts_engine.obj
 	$(CC) $(CFLAGS) /c $(@B).c
 	$(CL) $(LFLAGS) /OUT:$@ $(LIBS) $(@B).obj
+hts_engine.exe: hts_engine.obj
+	$(CL) $(LFLAGS) /OUT:$@ $(LIBS) hts_engine.obj
+
+hts_engine.obj: hts_engine.c
+	$(CC) $(CFLAGS) /c hts_engine.c
 
 clean:	
 	del *.exe
