@@ -67,10 +67,4 @@ emconfigure ./configure \
 # Compile Sinsy
 emmake make -j$(nproc)
 
-# Rename the output binary if needed
-if [ -f bin/sinsy ] && [ ! -f bin/sinsy.js ]; then
-    echo "Renaming bin/sinsy to bin/sinsy.js..."
-    mv bin/sinsy bin/sinsy.js
-fi
-
 echo "✅ Build Complete."
