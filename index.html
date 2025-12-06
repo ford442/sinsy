@@ -23,32 +23,35 @@
           console.error(text);
         }
       };
-
-      runButton.addEventListener('click', () => {
+runButton.addEventListener('click', () => {
         const args = [
-          '/sinsy.js',
+          // REMOVED: '/sinsy.js', 
           '-x', '/dic',
           '-m', '/voices/nitech_jp_song070_f001.htsvoice',
           '-o', 'output.wav',
-          '/scores/Ave_Maria_D839_-_Schubert_-_Solo_Piano_Arrg.mxl'
+          '/scores/Ave_Maria_D839_-_Schubert_-_Solo_Piano_Arrg..mxl'
         ];
         
-        Module.callMain(args);
+        // It is good practice to check the return value (0 = success)
+        const returnCode = Module.callMain(args);
 
-        // Create a download link for the output file
-        try {
-          const wavData = Module.FS.readFile('output.wav');
-          const blob = new Blob([wavData], { type: 'audio/wav' });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = 'output.wav';
-          a.textContent = 'Download output.wav';
-          outputElement.innerHTML = '';
-          outputElement.appendChild(a);
-        } catch (e) {
-          console.error(e);
-          outputElement.textContent = 'Error creating download link. See console for details.';
+        if (returnCode === 0) {
+            try {
+              const wavData = Module.FS.readFile('output.wav');
+              const blob = new Blob([wavData], { type: 'audio/wav' });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = 'output.wav';
+              a.textContent = 'Download output.wav';
+              outputElement.innerHTML = '';
+              outputElement.appendChild(a);
+            } catch (e) {
+              console.error(e);
+              outputElement.textContent = 'Error reading output file.';
+            }
+        } else {
+            outputElement.textContent = 'Synthesis failed. Check console for details.';
         }
       });
     </script>
