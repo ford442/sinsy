@@ -123,7 +123,7 @@ runButton.addEventListener('click', async () => {
             throw new Error('No song selected or uploaded');
           }
 
-          const args = ['-x', '/dic', '-m', voicePath, '-o', 'output.wav', mxlPath];
+          const args = ['-w', 'j', '-x', '/dic', '-m', voicePath, '-o', 'output.wav', mxlPath];
 
           // It is good practice to check the return value (0 = success)
           const returnCode = Module.callMain(args);
