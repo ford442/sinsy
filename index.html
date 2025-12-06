@@ -153,6 +153,16 @@
           langCode = 'j'; // Switch to Japanese for Japanese voices
         }
 
+        console.log('--- Debug Info ---');
+        console.log('Voice Path:', voicePath);
+        console.log('Detected Language Code:', langCode);
+        try {
+          console.log('Contents of /dic:', Module.FS.readdir('/dic'));
+        } catch (e) {
+          console.error('Failed to list /dic:', e);
+        }
+        console.log('--- End Debug Info ---');
+
         const args = ['-w', langCode, '-x', '/dic', '-m', voicePath, '-o', 'output.wav', mxlPath];
 
         // It is good practice to check the return value (0 = success)
