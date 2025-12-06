@@ -149,19 +149,15 @@
 
         // Detect language based on selected voice filename
         let langCode = 'e'; // default English
-        if (voicePath.includes('nitech') || voicePath.includes('jp')) {
-          langCode = 'j'; // Switch to Japanese for Japanese voices
+
+        let nameToCheck = voicePath;
+        if (localVoiceFile) {
+          nameToCheck = localVoiceFile.name;
         }
 
-        console.log('--- Debug Info ---');
-        console.log('Voice Path:', voicePath);
-        console.log('Detected Language Code:', langCode);
-        try {
-          console.log('Contents of /dic:', Module.FS.readdir('/dic'));
-        } catch (e) {
-          console.error('Failed to list /dic:', e);
+        if (nameToCheck.includes('nitech') || nameToCheck.includes('jp')) {
+          langCode = 'j'; // Switch to Japanese for Japanese voices
         }
-        console.log('--- End Debug Info ---');
 
         const args = ['-w', langCode, '-x', '/dic', '-m', voicePath, '-o', 'output.wav', mxlPath];
 
