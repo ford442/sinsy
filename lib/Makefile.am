@@ -18,6 +18,8 @@ libSinsy_a_SOURCES = Sinsy.cpp \
                      ./converter/ConfManager.h \
                      ./converter/Converter.cpp \
                      ./converter/Converter.h \
+                     ./converter/GeneralConf.cpp \
+                     ./converter/GeneralConf.h \
                      ./converter/IConf.h \
                      ./converter/IConvertable.h \
                      ./converter/PhonemeInfo.cpp \
