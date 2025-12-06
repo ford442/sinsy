@@ -27,7 +27,7 @@
       const outputElement = document.getElementById('output');
 
       var Module = {
-        // Ensure data and wasm files are loaded from the same `bin/` directory
+        // Ensure data and wasm files are loaded from the same directory
         locateFile: function(path) { return './' + path; },
         onRuntimeInitialized: function() {
           console.log('Sinsy loaded');
@@ -179,6 +179,6 @@ runButton.addEventListener('click', async () => {
       // initial populate
       populateLists();
     </script>
-    <script src="bin/sinsy.js"></script>
+    <script src="sinsy.js"></script>
   </body>
 </html>
