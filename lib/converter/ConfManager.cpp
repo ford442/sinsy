@@ -48,6 +48,7 @@
 #include "ConfGroup.h"
 #include "util_converter.h"
 #include "JConf.h"
+#include "GeneralConf.h"
 
 namespace sinsy
 {
@@ -108,7 +109,6 @@ void ConfManager::addJConf(IConf* conf)
 
 /*!
  set languages
- (Currently, you can set only Japanese (j))
  */
 bool ConfManager::setLanguages(const std::string& languages, const std::string& dirPath)
 {
@@ -162,6 +162,22 @@ bool ConfManager::setLanguages(const std::string& languages, const std::string& 
          addJConf(eJConf);
          deleteList.push_back(eJConf);
 
+         break;
+      }
+      case 'e' : { // English
+         const std::string TABLE_UTF_8(dirPath + "/english.utf_8.table");
+         const std::string CONF_UTF_8(dirPath + "/english.utf_8.conf");
+         const std::string MACRON_TABLE(dirPath + "/english.macron");
+
+         GeneralConf* uEConf = new GeneralConf();
+
+         if (!uEConf->read(TABLE_UTF_8, CONF_UTF_8, MACRON_TABLE)) {
+            ERR_MSG("Cannot read English table or config or macron file : " << TABLE_UTF_8 << ", " << CONF_UTF_8);
+            delete uEConf;
+            return false;
+         }
+         confList.push_back(uEConf);
+         deleteList.push_back(uEConf);
          break;
       }
       default :
