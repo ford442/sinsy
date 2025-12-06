@@ -154,7 +154,7 @@ runButton.addEventListener('click', async () => {
         voiceSel.innerHTML = '<option value="">-- choose a voice from server --</option>';
         mxlSel.innerHTML = '<option value="">-- choose a song from server --</option>';
 
-        const voices = await fetchDirEntries('/voices/');
+        const voices = await fetchDirEntries('./voices/');
         voices.filter(f => f.toLowerCase().endsWith('.htsvoice')).forEach(f => {
           const path = '/voices/' + f;
           const opt = document.createElement('option');
@@ -163,7 +163,7 @@ runButton.addEventListener('click', async () => {
           voiceSel.appendChild(opt);
         });
 
-        const mxls = await fetchDirEntries('/scores/');
+        const mxls = await fetchDirEntries('./scores/');
         mxls.filter(f => f.toLowerCase().endsWith('.mxl') || f.toLowerCase().endsWith('.xml')).forEach(f => {
           const path = '/scores/' + f;
           const opt = document.createElement('option');
