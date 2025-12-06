@@ -28,7 +28,7 @@
 
       var Module = {
         // Ensure data and wasm files are loaded from the same `bin/` directory
-        locateFile: function(path) { return 'bin/' + path; },
+        locateFile: function(path) { return './' + path; },
         onRuntimeInitialized: function() {
           console.log('Sinsy loaded');
           runButton.disabled = false;
