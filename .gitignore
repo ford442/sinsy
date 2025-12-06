@@ -1,2 +1,28 @@
 node_modules
 emsdk
+
+# Build artifacts
+*.o
+*.a
+*.so
+*.dylib
+*.Po
+.deps/
+autom4te.cache/
+config.log
+config.status
+configure~
+_codeql_detected_source_root
+
+# Build directories
+lib/libSinsy.a
+bin/sinsy.o
+bin/sinsy.js
+bin/sinsy.wasm
+bin/sinsy.data
+
+# Generated configuration
+include/config.h
+Makefile
+Makefile.in
+aclocal.m4
