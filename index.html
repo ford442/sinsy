@@ -97,6 +97,7 @@ runButton.addEventListener('click', async () => {
             voicePath = '/voices/voice.htsvoice';
           } else {
             throw new Error('No voice selected or uploaded');
+
           }
 
           // handle musicxml: uploaded file wins, otherwise selected server file
@@ -123,7 +124,7 @@ runButton.addEventListener('click', async () => {
             throw new Error('No song selected or uploaded');
           }
 
-          const args = ['-w', 'j', '-x', '/dic', '-m', voicePath, '-o', 'output.wav', mxlPath];
+          const args = ['-w', 'e', '-x', '/dic', '-m', voicePath, '-o', 'output.wav', mxlPath];
 
           // It is good practice to check the return value (0 = success)
           const returnCode = Module.callMain(args);
