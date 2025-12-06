@@ -51,16 +51,35 @@ runButton.addEventListener('click', async () => {
         try { Module.FS.mkdir('/voices'); } catch (e) {}
         try { Module.FS.mkdir('/scores'); } catch (e) {}
 
+        // helper: extract MusicXML from .mxl (zip) archive
+        async function extractMxlToXml(data) {
+          const zip = await JSZip.loadAsync(data);
+          // find the main .xml file (usually referenced in META-INF/container.xml or just the first .xml)
+          const xmlFiles = Object.keys(zip.files).filter(name => name.endsWith('.xml') && !name.startsWith('META-INF/'));
+          if (xmlFiles.length === 0) throw new Error('No .xml file found in .mxl archive');
+          const xmlData = await zip.file(xmlFiles[0]).async('uint8array');
+          return xmlData;
+        }
+
         // helper: fetch remote URL into FS
         async function fetchToFS(url, destPath) {
           outputElement.textContent = `Fetching ${url} ...`;
           const res = await fetch(url);
           if (!res.ok) throw new Error(`HTTP ${res.status} when fetching ${url}`);
-          const data = new Uint8Array(await res.arrayBuffer());
+          let data = new Uint8Array(await res.arrayBuffer());
+          
+          // if it's an .mxl file, extract the XML
+          if (destPath.toLowerCase().endsWith('.mxl')) {
+            outputElement.textContent = `Extracting ${url} ...`;
+            data = await extractMxlToXml(data);
+            destPath = destPath.replace(/\.mxl$/i, '.xml');
+          }
+          
           // write or overwrite
           try { Module.FS.unlink(destPath); } catch (_) {}
           Module.FS.writeFile(destPath, data);
           outputElement.textContent = `Wrote ${destPath} (${data.length} bytes)`;
+          return destPath;
         }
 
         try {
@@ -82,14 +101,24 @@ runButton.addEventListener('click', async () => {
 
           // handle musicxml: uploaded file wins, otherwise selected server file
           if (localMxlFile) {
-            const data = new Uint8Array(await localMxlFile.arrayBuffer());
-            try { Module.FS.unlink('/scores/score_uploaded.mxl'); } catch (_) {}
-            Module.FS.writeFile('/scores/score_uploaded.mxl', data);
-            outputElement.textContent = `Wrote /scores/score_uploaded.mxl (${data.length} bytes)`;
-            mxlPath = '/scores/score_uploaded.mxl';
+            let data = new Uint8Array(await localMxlFile.arrayBuffer());
+            let filename = localMxlFile.name.toLowerCase();
+            
+            // if it's an .mxl file, extract the XML
+            if (filename.endsWith('.mxl')) {
+              outputElement.textContent = `Extracting ${localMxlFile.name} ...`;
+              data = await extractMxlToXml(data);
+              mxlPath = '/scores/score_uploaded.xml';
+              try { Module.FS.unlink(mxlPath); } catch (_) {}
+            } else {
+              mxlPath = '/scores/score_uploaded.xml';
+              try { Module.FS.unlink(mxlPath); } catch (_) {}
+            }
+            
+            Module.FS.writeFile(mxlPath, data);
+            outputElement.textContent = `Wrote ${mxlPath} (${data.length} bytes)`;
           } else if (selectedMxl) {
-            await fetchToFS(selectedMxl, '/scores/score.mxl');
-            mxlPath = '/scores/score.mxl';
+            mxlPath = await fetchToFS(selectedMxl, '/scores/score.mxl');
           } else {
             throw new Error('No song selected or uploaded');
           }
@@ -179,6 +208,7 @@ runButton.addEventListener('click', async () => {
       // initial populate
       populateLists();
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="sinsy.js"></script>
   </body>
 </html>
