@@ -28,6 +28,7 @@ update_config_scripts
 
 # Configure and build HTS Engine
 emconfigure ./configure --prefix="$INSTALL_DIR" --host=wasm32-unknown-emscripten CFLAGS="-DWORDS_LITTLEENDIAN"
+emmake make clean
 emmake make -j$(nproc)
 emmake make install
 
@@ -50,6 +51,7 @@ emconfigure ./configure \
 
 # Compile Sinsy
 # FIX: Fixed broken preload paths to use $(pwd) instead of hardcoded /content/build_space
+emmake make clean
 emmake make -j$(nproc) \
   LDFLAGS="-L$INSTALL_DIR/lib -s EXPORTED_FUNCTIONS=[_main] -sSUPPORT_BIG_ENDIAN=1 -s EXPORTED_RUNTIME_METHODS=[FS,callMain] -s DISABLE_EXCEPTION_CATCHING=0 -s ALLOW_MEMORY_GROWTH=1 -s INVOKE_RUN=0 --preload-file $(pwd)/dic@/dic --preload-file $(pwd)/voices@/voices --preload-file $(pwd)/scores@/scores"
 

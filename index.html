@@ -1,260 +1,273 @@
 <!doctype html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Sinsy</title>
-  </head>
-  <body>
-    <div style="display:flex; gap:1rem; align-items:center; margin-bottom:.5rem;">
-      <div>
-        <strong>Voice (server)</strong><br>
-        <select id="voice-list" style="min-width:420px"></select>
-        <button id="reload-voices">Refresh</button>
-        <div style="margin-top:.3rem;">or upload a local voice: <input id="voice-file" type="file" accept=".htsvoice"/></div>
-      </div>
-      <div>
-        <strong>Song (server)</strong><br>
-        <select id="mxl-list" style="min-width:420px"></select>
-        <button id="reload-mxls">Refresh</button>
-        <div style="margin-top:.3rem;">or upload a local MusicXML: <input id="mxl-file" type="file" accept=".mxl,.xml"/></div>
+
+<head>
+  <meta charset="utf-8">
+  <title>Sinsy</title>
+</head>
+
+<body>
+  <div style="display:flex; gap:1rem; align-items:center; margin-bottom:.5rem;">
+    <div>
+      <strong>Voice (server)</strong><br>
+      <select id="voice-list" style="min-width:420px"></select>
+      <button id="reload-voices">Refresh</button>
+      <div style="margin-top:.3rem;">or upload a local voice: <input id="voice-file" type="file" accept=".htsvoice" />
       </div>
     </div>
-    <p style="color: #444; max-width: 80ch;">Tip: select server entries (from the directories /voices and /scores) or choose a local file. Server lists are fetched dynamically. Local file uploads are written directly into the in-memory Emscripten FS and used for synthesis.</p>
-    <button id="run-button" disabled>Synthesize</button>
-    <div id="output"></div>
-    <script>
-      const runButton = document.getElementById('run-button');
-      const outputElement = document.getElementById('output');
+    <div>
+      <strong>Song (server)</strong><br>
+      <select id="mxl-list" style="min-width:420px"></select>
+      <button id="reload-mxls">Refresh</button>
+      <div style="margin-top:.3rem;">or upload a local MusicXML: <input id="mxl-file" type="file" accept=".mxl,.xml" />
+      </div>
+    </div>
+  </div>
+  <p style="color: #444; max-width: 80ch;">Tip: select server entries (from the directories /voices and /scores) or
+    choose a local file. Server lists are fetched dynamically. Local file uploads are written directly into the
+    in-memory Emscripten FS and used for synthesis.</p>
+  <button id="run-button" disabled>Synthesize</button>
+  <div id="output"></div>
+  <script>
+    const runButton = document.getElementById('run-button');
+    const outputElement = document.getElementById('output');
 
-      var Module = {
-        // Ensure data and wasm files are loaded from the same directory
-        locateFile: function(path) { return './' + path; },
-        onRuntimeInitialized: function() {
-          console.log('Sinsy loaded');
-          runButton.disabled = false;
-        },
-        print: function(text) {
-          console.log(text);
-        },
-        printErr: function(text) {
-          console.error(text);
+    var Module = {
+      // Ensure data and wasm files are loaded from the same directory
+      locateFile: function (path) { return './' + path; },
+      onRuntimeInitialized: function () {
+        console.log('Sinsy loaded');
+        runButton.disabled = false;
+      },
+      print: function (text) {
+        console.log(text);
+      },
+      printErr: function (text) {
+        console.error(text);
+      }
+    };
+    runButton.addEventListener('click', async () => {
+      // selection/upload elements
+      const selectedVoice = document.getElementById('voice-list').value;
+      const selectedMxl = document.getElementById('mxl-list').value;
+      const localVoiceFile = document.getElementById('voice-file').files[0];
+      const localMxlFile = document.getElementById('mxl-file').files[0];
+
+      // make sure directories exist in WASM FS
+      try { Module.FS.mkdir('/voices'); } catch (e) { }
+      try { Module.FS.mkdir('/scores'); } catch (e) { }
+
+      // helper: extract MusicXML from .mxl (zip) archive
+      async function extractMxlToXml(data) {
+        const zip = await JSZip.loadAsync(data);
+        // find the main .xml file (usually referenced in META-INF/container.xml or just the first .xml)
+        const xmlFiles = Object.keys(zip.files).filter(name => name.endsWith('.xml') && !name.startsWith('META-INF/'));
+        if (xmlFiles.length === 0) throw new Error('No .xml file found in .mxl archive');
+        const xmlData = await zip.file(xmlFiles[0]).async('uint8array');
+        return xmlData;
+      }
+
+      // helper: fetch remote URL into FS
+      async function fetchToFS(url, destPath) {
+        outputElement.textContent = `Fetching ${url} ...`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`HTTP ${res.status} when fetching ${url}`);
+        let data = new Uint8Array(await res.arrayBuffer());
+
+        // if it's an .mxl file, extract the XML
+        if (destPath.toLowerCase().endsWith('.mxl')) {
+          outputElement.textContent = `Extracting ${url} ...`;
+          data = await extractMxlToXml(data);
+          destPath = destPath.replace(/\.mxl$/i, '.xml');
         }
-      };
-runButton.addEventListener('click', async () => {
-        // selection/upload elements
-        const selectedVoice = document.getElementById('voice-list').value;
-        const selectedMxl = document.getElementById('mxl-list').value;
-        const localVoiceFile = document.getElementById('voice-file').files[0];
-        const localMxlFile = document.getElementById('mxl-file').files[0];
 
-        // make sure directories exist in WASM FS
-        try { Module.FS.mkdir('/voices'); } catch (e) {}
-        try { Module.FS.mkdir('/scores'); } catch (e) {}
+        // write or overwrite
+        try { Module.FS.unlink(destPath); } catch (_) { }
+        Module.FS.writeFile(destPath, data);
+        outputElement.textContent = `Wrote ${destPath} (${data.length} bytes)`;
+        return destPath;
+      }
 
-        // helper: extract MusicXML from .mxl (zip) archive
-        async function extractMxlToXml(data) {
-          const zip = await JSZip.loadAsync(data);
-          // find the main .xml file (usually referenced in META-INF/container.xml or just the first .xml)
-          const xmlFiles = Object.keys(zip.files).filter(name => name.endsWith('.xml') && !name.startsWith('META-INF/'));
-          if (xmlFiles.length === 0) throw new Error('No .xml file found in .mxl archive');
-          const xmlData = await zip.file(xmlFiles[0]).async('uint8array');
-          return xmlData;
+      try {
+        let voicePath, mxlPath;
+
+        // handle voice: uploaded file wins, otherwise selected server file
+        if (localVoiceFile) {
+          const data = new Uint8Array(await localVoiceFile.arrayBuffer());
+          try { Module.FS.unlink('/voices/voice_uploaded.htsvoice'); } catch (_) { }
+          Module.FS.writeFile('/voices/voice_uploaded.htsvoice', data);
+          outputElement.textContent = `Wrote /voices/voice_uploaded.htsvoice (${data.length} bytes)`;
+          voicePath = '/voices/voice_uploaded.htsvoice';
+        } else if (selectedVoice) {
+          await fetchToFS(selectedVoice, '/voices/voice.htsvoice');
+          voicePath = '/voices/voice.htsvoice';
+        } else {
+          throw new Error('No voice selected or uploaded');
+
         }
 
-        // helper: fetch remote URL into FS
-        async function fetchToFS(url, destPath) {
-          outputElement.textContent = `Fetching ${url} ...`;
-          const res = await fetch(url);
-          if (!res.ok) throw new Error(`HTTP ${res.status} when fetching ${url}`);
-          let data = new Uint8Array(await res.arrayBuffer());
-          
+        // handle musicxml: uploaded file wins, otherwise selected server file
+        if (localMxlFile) {
+          let data = new Uint8Array(await localMxlFile.arrayBuffer());
+          let filename = localMxlFile.name.toLowerCase();
+
           // if it's an .mxl file, extract the XML
-          if (destPath.toLowerCase().endsWith('.mxl')) {
-            outputElement.textContent = `Extracting ${url} ...`;
+          if (filename.endsWith('.mxl')) {
+            outputElement.textContent = `Extracting ${localMxlFile.name} ...`;
             data = await extractMxlToXml(data);
-            destPath = destPath.replace(/\.mxl$/i, '.xml');
+            mxlPath = '/scores/score_uploaded.xml';
+            try { Module.FS.unlink(mxlPath); } catch (_) { }
+          } else {
+            mxlPath = '/scores/score_uploaded.xml';
+            try { Module.FS.unlink(mxlPath); } catch (_) { }
           }
-          
-          // write or overwrite
-          try { Module.FS.unlink(destPath); } catch (_) {}
-          Module.FS.writeFile(destPath, data);
-          outputElement.textContent = `Wrote ${destPath} (${data.length} bytes)`;
-          return destPath;
+
+          Module.FS.writeFile(mxlPath, data);
+          outputElement.textContent = `Wrote ${mxlPath} (${data.length} bytes)`;
+        } else if (selectedMxl) {
+          mxlPath = await fetchToFS(selectedMxl, '/scores/score.mxl');
+        } else {
+          throw new Error('No song selected or uploaded');
         }
 
-        try {
-          let voicePath, mxlPath;
+        // Ensure /dic directory exists
+        try { Module.FS.mkdir('/dic'); } catch (e) { }
 
-          // handle voice: uploaded file wins, otherwise selected server file
-          if (localVoiceFile) {
-            const data = new Uint8Array(await localVoiceFile.arrayBuffer());
-            try { Module.FS.unlink('/voices/voice_uploaded.htsvoice'); } catch (_) {}
-            Module.FS.writeFile('/voices/voice_uploaded.htsvoice', data);
-            outputElement.textContent = `Wrote /voices/voice_uploaded.htsvoice (${data.length} bytes)`;
-            voicePath = '/voices/voice_uploaded.htsvoice';
-          } else if (selectedVoice) {
-            await fetchToFS(selectedVoice, '/voices/voice.htsvoice');
-            voicePath = '/voices/voice.htsvoice';
-          } else {
-            throw new Error('No voice selected or uploaded');
+        // Fetch and write dictionary files
+        const dicFiles = [
+          'japanese.utf_8.conf',
+          'japanese.utf_8.table',
+          'english.utf_8.conf',
+          'english.utf_8.table'
+        ];
 
-          }
+        for (const file of dicFiles) {
+          // We can use fetchToFS to load them. 
+          // We assume they are served at ./dic/ on the server.
+          await fetchToFS(`./dic/${file}`, `/dic/${file}`);
+        }
 
-          // handle musicxml: uploaded file wins, otherwise selected server file
-          if (localMxlFile) {
-            let data = new Uint8Array(await localMxlFile.arrayBuffer());
-            let filename = localMxlFile.name.toLowerCase();
-            
-            // if it's an .mxl file, extract the XML
-            if (filename.endsWith('.mxl')) {
-              outputElement.textContent = `Extracting ${localMxlFile.name} ...`;
-              data = await extractMxlToXml(data);
-              mxlPath = '/scores/score_uploaded.xml';
-              try { Module.FS.unlink(mxlPath); } catch (_) {}
-            } else {
-              mxlPath = '/scores/score_uploaded.xml';
-              try { Module.FS.unlink(mxlPath); } catch (_) {}
-            }
-            
-            Module.FS.writeFile(mxlPath, data);
-            outputElement.textContent = `Wrote ${mxlPath} (${data.length} bytes)`;
-          } else if (selectedMxl) {
-            mxlPath = await fetchToFS(selectedMxl, '/scores/score.mxl');
-          } else {
-            throw new Error('No song selected or uploaded');
-          }
+        // Detect language based on selected voice filename
+        let langCode = 'e'; // default English
+        if (voicePath.includes('nitech') || voicePath.includes('jp')) {
+          langCode = 'j'; // Switch to Japanese for Japanese voices
+        }
 
-          // Ensure /dic directory exists
-          try { Module.FS.mkdir('/dic'); } catch (e) {}
+        const args = ['-w', langCode, '-x', '/dic', '-m', voicePath, '-o', 'output.wav', mxlPath];
 
-          // Fetch and write dictionary files
-          const dicFiles = [
-            'japanese.utf_8.conf',
-            'japanese.utf_8.table',
-            'english.utf_8.conf',
-            'english.utf_8.table'
-          ];
-
-          for (const file of dicFiles) {
-             // We can use fetchToFS to load them. 
-             // We assume they are served at ./dic/ on the server.
-             await fetchToFS(`./dic/${file}`, `/dic/${file}`);
-          }
-
-          const args = ['-w', 'e', '-x', '/dic', '-m', voicePath, '-o', 'output.wav', mxlPath];
-
-          // It is good practice to check the return value (0 = success)
-          const returnCode = Module.callMain(args);
+        // It is good practice to check the return value (0 = success)
+        const returnCode = Module.callMain(args);
 
         if (returnCode === 0) {
-            try {
-              const wavData = Module.FS.readFile('output.wav');
+          try {
+            const wavData = Module.FS.readFile('output.wav');
 
-              // --- Start WAV Header Debugging ---
-              console.log(`Total output.wav size: ${wavData.length} bytes`);
-              if (wavData.length >= 44) {
-                const header = wavData.subarray(0, 44);
-                const dataView = new DataView(header.buffer, header.byteOffset, header.byteLength);
-                
-                // Check RIFF/WAVE signature
-                const riffHeader = new TextDecoder('ascii').decode(header.subarray(0, 4));
-                const waveHeader = new TextDecoder('ascii').decode(header.subarray(8, 12));
-                console.log(`WAV Signature: ${riffHeader}...${waveHeader}`);
+            // --- Start WAV Header Debugging ---
+            console.log(`Total output.wav size: ${wavData.length} bytes`);
+            if (wavData.length >= 44) {
+              const header = wavData.subarray(0, 44);
+              const dataView = new DataView(header.buffer, header.byteOffset, header.byteLength);
 
-                // Extract format details (little-endian)
-                const audioFormat = dataView.getUint16(20, true);
-                const numChannels = dataView.getUint16(22, true);
-                const sampleRate = dataView.getUint32(24, true);
-                const bitsPerSample = dataView.getUint16(34, true);
+              // Check RIFF/WAVE signature
+              const riffHeader = new TextDecoder('ascii').decode(header.subarray(0, 4));
+              const waveHeader = new TextDecoder('ascii').decode(header.subarray(8, 12));
+              console.log(`WAV Signature: ${riffHeader}...${waveHeader}`);
 
-                console.log('WAV Header Details:');
-                console.log(`  - Audio Format: ${audioFormat} (Expected: 1 for PCM)`);
-                console.log(`  - Channels: ${numChannels}`);
-                console.log(`  - Sample Rate: ${sampleRate}`);
-                console.log(`  - Bits Per Sample: ${bitsPerSample} (Expected: 16)`);
-              } else {
-                console.error('output.wav is too small to be a valid WAV file.');
-              }
-              // --- End WAV Header Debugging ---
+              // Extract format details (little-endian)
+              const audioFormat = dataView.getUint16(20, true);
+              const numChannels = dataView.getUint16(22, true);
+              const sampleRate = dataView.getUint32(24, true);
+              const bitsPerSample = dataView.getUint16(34, true);
 
-              const blob = new Blob([wavData], { type: 'audio/wav' });
-              const url = URL.createObjectURL(blob);
-              const a = document.createElement('a');
-              a.href = url;
-              a.download = 'output.wav';
-              a.textContent = 'Download output.wav';
-              outputElement.innerHTML = '';
-              outputElement.appendChild(a);
-            } catch (e) {
-              console.error(e);
-              outputElement.textContent = 'Error reading output file.';
+              console.log('WAV Header Details:');
+              console.log(`  - Audio Format: ${audioFormat} (Expected: 1 for PCM)`);
+              console.log(`  - Channels: ${numChannels}`);
+              console.log(`  - Sample Rate: ${sampleRate}`);
+              console.log(`  - Bits Per Sample: ${bitsPerSample} (Expected: 16)`);
+            } else {
+              console.error('output.wav is too small to be a valid WAV file.');
             }
+            // --- End WAV Header Debugging ---
+
+            const blob = new Blob([wavData], { type: 'audio/wav' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'output.wav';
+            a.textContent = 'Download output.wav';
+            outputElement.innerHTML = '';
+            outputElement.appendChild(a);
+          } catch (e) {
+            console.error(e);
+            outputElement.textContent = 'Error reading output file.';
+          }
         } else {
-            outputElement.textContent = 'Synthesis failed. Check console for details.';
+          outputElement.textContent = 'Synthesis failed. Check console for details.';
         }
-        } catch (e) {
-          console.error(e);
-          outputElement.textContent = `Error: ${e.message}`;
+      } catch (e) {
+        console.error(e);
+        outputElement.textContent = `Error: ${e.message}`;
+      }
+    });
+
+    // --- Directory listing helpers ---
+    async function fetchDirEntries(url) {
+      try {
+        const res = await fetch(url);
+        if (!res.ok) return [];
+        const txt = await res.text();
+        // pull hrefs (works with typical directory HTML)
+        const re = /href\s*=\s*"([^"]+)"/gi;
+        const entries = [];
+        let m;
+        while ((m = re.exec(txt)) !== null) {
+          let href = m[1];
+          if (href === '../' || href === '/') continue;
+          if (href.endsWith('/')) continue; // skip directories
+          entries.push(href);
         }
+        return entries;
+      } catch (e) {
+        console.warn('fetchDirEntries failed', e);
+        return [];
+      }
+    }
+
+    async function populateLists() {
+      const voiceSel = document.getElementById('voice-list');
+      const mxlSel = document.getElementById('mxl-list');
+
+      // reset
+      voiceSel.innerHTML = '<option value="">-- choose a voice from server --</option>';
+      mxlSel.innerHTML = '<option value="">-- choose a song from server --</option>';
+
+      const voices = await fetchDirEntries('./voices/');
+      voices.filter(f => f.toLowerCase().endsWith('.htsvoice')).forEach(f => {
+        const path = './voices/' + f;
+        const opt = document.createElement('option');
+        opt.value = path;
+        opt.textContent = f;
+        voiceSel.appendChild(opt);
       });
 
-      // --- Directory listing helpers ---
-      async function fetchDirEntries(url) {
-        try {
-          const res = await fetch(url);
-          if (!res.ok) return [];
-          const txt = await res.text();
-          // pull hrefs (works with typical directory HTML)
-          const re = /href\s*=\s*"([^"]+)"/gi;
-          const entries = [];
-          let m;
-          while ((m = re.exec(txt)) !== null) {
-            let href = m[1];
-            if (href === '../' || href === '/') continue;
-            if (href.endsWith('/')) continue; // skip directories
-            entries.push(href);
-          }
-          return entries;
-        } catch (e) {
-          console.warn('fetchDirEntries failed', e);
-          return [];
-        }
-      }
+      const mxls = await fetchDirEntries('./scores/');
+      mxls.filter(f => f.toLowerCase().endsWith('.mxl') || f.toLowerCase().endsWith('.xml')).forEach(f => {
+        const path = './scores/' + f;
+        const opt = document.createElement('option');
+        opt.value = path;
+        opt.textContent = f;
+        mxlSel.appendChild(opt);
+      });
+    }
 
-      async function populateLists() {
-        const voiceSel = document.getElementById('voice-list');
-        const mxlSel = document.getElementById('mxl-list');
+    document.getElementById('reload-voices').addEventListener('click', populateLists);
+    document.getElementById('reload-mxls').addEventListener('click', populateLists);
 
-        // reset
-        voiceSel.innerHTML = '<option value="">-- choose a voice from server --</option>';
-        mxlSel.innerHTML = '<option value="">-- choose a song from server --</option>';
+    // initial populate
+    populateLists();
+  </script>
+  <script src="./jszip.min.js"></script>
+  <script src="./sinsy.js"></script>
+</body>
 
-        const voices = await fetchDirEntries('./voices/');
-        voices.filter(f => f.toLowerCase().endsWith('.htsvoice')).forEach(f => {
-          const path = './voices/' + f;
-          const opt = document.createElement('option');
-          opt.value = path;
-          opt.textContent = f;
-          voiceSel.appendChild(opt);
-        });
-
-        const mxls = await fetchDirEntries('./scores/');
-        mxls.filter(f => f.toLowerCase().endsWith('.mxl') || f.toLowerCase().endsWith('.xml')).forEach(f => {
-          const path = './scores/' + f;
-          const opt = document.createElement('option');
-          opt.value = path;
-          opt.textContent = f;
-          mxlSel.appendChild(opt);
-        });
-      }
-
-      document.getElementById('reload-voices').addEventListener('click', populateLists);
-      document.getElementById('reload-mxls').addEventListener('click', populateLists);
-
-      // initial populate
-      populateLists();
-    </script>
-    <script src="./jszip.min.js"></script>
-    <script src="./sinsy.js"></script>
-  </body>
 </html>
