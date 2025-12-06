@@ -1,16 +1,15 @@
 #!/bin/bash
 source /content/build_space/emsdk/emsdk_env.sh # Uncomment if running in an environment where this is needed
-# Exit immediately if a command exits with a non-zero status
-set -e
 
-# Define installation path for the Wasm dependencies
+set -e # Exit immediately if a command exits with a non-zero status
+
+# 1. Define installation path for the Wasm dependencies
 INSTALL_DIR="$(pwd)/wasm_install"
 mkdir -p "$INSTALL_DIR"
 
-# Helper function to update config.sub and config.guess
+# Helper to update config scripts for Wasm support
 update_config_scripts() {
     echo "Updating config.sub and config.guess in $(pwd)/config..."
-    # Download latest config.guess and config.sub from GNU savannah
     curl -o config/config.guess 'https://git.savannah.gnu.org/gitweb/?p=config.git;a=blob_plain;f=config.guess;hb=HEAD'
     curl -o config/config.sub 'https://git.savannah.gnu.org/gitweb/?p=config.git;a=blob_plain;f=config.sub;hb=HEAD'
     chmod +x config/config.guess config/config.sub
@@ -18,6 +17,9 @@ update_config_scripts() {
 
 echo "=== Building hts_engine_API ==="
 cd hts_engine_API
+
+# FIX: Create dummy ChangeLog to satisfy automake strictness
+touch ChangeLog
 
 # Generate configure script
 autoreconf -i
@@ -33,19 +35,31 @@ emmake make install
 cd ..
 
 echo "=== Building Sinsy ==="
+# Ensure Sinsy also has necessary files (just in case)
+touch ChangeLog
+
+# Generate configure script
 chmod +x configure
 autoreconf -i
+
+# FIX: Update config scripts to recognize 'emscripten'
 update_config_scripts
 
-# We add LDFLAGS here with the EXPORTED_FUNCTIONS setting.
-# Note: _main is usually exported by default for executables, 
-# but explicitly adding it ensures it's available.
+# Configure Sinsy
+# LDFLAGS includes the fix for proper quoting of EXPORTED_FUNCTIONS
 emconfigure ./configure \
   --with-hts-engine-header-path="$INSTALL_DIR/include" \
   --with-hts-engine-library-path="$INSTALL_DIR/lib" \
   --host=wasm32-unknown-emscripten \
   LDFLAGS="-s \"EXPORTED_FUNCTIONS=['_main']\" -s ALLOW_MEMORY_GROWTH=1"
 
+# Compile Sinsy
 emmake make -j$(nproc)
 
-echo "Build complete."
+# FIX: Rename the output binary if it lacks the .js extension
+if [ -f bin/sinsy ] && [ ! -f bin/sinsy.js ]; then
+    echo "Renaming bin/sinsy to bin/sinsy.js..."
+    mv bin/sinsy bin/sinsy.js
+fi
+
+echo "✅ Build Complete."
