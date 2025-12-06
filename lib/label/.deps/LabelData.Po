@@ -630,7 +630,7 @@ label/LabelData.o: label/LabelData.cpp util/util_log.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__fwd/stack.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/print \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/unistd.h \
-  util/util_types.h label/LabelData.h \
+  util/util_types.h ../include/config.h label/LabelData.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/map \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__tree \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/sstream
@@ -1267,6 +1267,7 @@ util/util_log.h:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/print:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/unistd.h:
 util/util_types.h:
+../include/config.h:
 label/LabelData.h:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/map:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__tree:

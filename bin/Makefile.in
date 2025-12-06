@@ -96,6 +96,7 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 DIST_COMMON = $(srcdir)/Makefile.am $(am__DIST_COMMON)
 mkinstalldirs = $(install_sh) -d
+CONFIG_HEADER = $(top_builddir)/include/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
@@ -103,8 +104,6 @@ PROGRAMS = $(bin_PROGRAMS)
 am_sinsy_js_OBJECTS = sinsy.$(OBJEXT)
 sinsy_js_OBJECTS = $(am_sinsy_js_OBJECTS)
 sinsy_js_DEPENDENCIES = @top_srcdir@/lib/libSinsy.a
-sinsy_js_LINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
-	$(sinsy_js_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -117,7 +116,7 @@ AM_V_at = $(am__v_at_@AM_V@)
 am__v_at_ = $(am__v_at_@AM_DEFAULT_V@)
 am__v_at_0 = @
 am__v_at_1 = 
-DEFAULT_INCLUDES = -I.@am__isrc@
+DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)/include
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__maybe_remake_depfiles = depfiles
 am__depfiles_remade = ./$(DEPDIR)/sinsy.Po
@@ -268,7 +267,6 @@ top_srcdir = @top_srcdir@
 AM_CPPFLAGS = -I @top_srcdir@/include
 sinsy_js_SOURCES = sinsy.cpp
 sinsy_js_LDADD = @top_srcdir@/lib/libSinsy.a
-sinsy_js_LDFLAGS = -s "EXPORTED_FUNCTIONS=['_main', '_sinsy_main']" -s "EXPORTED_RUNTIME_METHODS=['FS','ccall', 'cwrap', 'callMain']" --preload-file @top_srcdir@/dic@/dic --preload-file @top_srcdir@/voices@/voices --preload-file @top_srcdir@/scores@/scores
 DISTCLEANFILES = *.log *.out *~
 MAINTAINERCLEANFILES = Makefile.in
 all: all-am
@@ -349,7 +347,7 @@ clean-binPROGRAMS:
 
 sinsy.js$(EXEEXT): $(sinsy_js_OBJECTS) $(sinsy_js_DEPENDENCIES) $(EXTRA_sinsy_js_DEPENDENCIES) 
 	@rm -f sinsy.js$(EXEEXT)
-	$(AM_V_CXXLD)$(sinsy_js_LINK) $(sinsy_js_OBJECTS) $(sinsy_js_LDADD) $(LIBS)
+	$(AM_V_CXXLD)$(CXXLINK) $(sinsy_js_OBJECTS) $(sinsy_js_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)

@@ -635,9 +635,9 @@ Sinsy.o: Sinsy.cpp \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/filesystem \
   ../include/sinsy.h util/util_log.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/iostream \
-  util/util_types.h converter/Converter.h converter/IConf.h \
-  converter/IConvertable.h score/Syllabic.h converter/util_converter.h \
-  util/PhonemeTable.h \
+  util/util_types.h ../include/config.h converter/Converter.h \
+  converter/IConf.h converter/IConvertable.h score/Syllabic.h \
+  converter/util_converter.h util/PhonemeTable.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/map \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__tree \
   converter/PhonemeInfo.h converter/ConfManager.h converter/ConfGroup.h \
@@ -1296,6 +1296,7 @@ Sinsy.o: Sinsy.cpp \
 util/util_log.h:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/iostream:
 util/util_types.h:
+../include/config.h:
 converter/Converter.h:
 converter/IConf.h:
 converter/IConvertable.h:

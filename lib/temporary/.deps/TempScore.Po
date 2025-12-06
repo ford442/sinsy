@@ -594,8 +594,8 @@ temporary/TempScore.o: temporary/TempScore.cpp \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/system_error \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/streambuf \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/cstdarg \
-  util/util_string.h util/util_types.h score/IScoreWritable.h \
-  score/Beat.h \
+  util/util_string.h util/util_types.h ../include/config.h \
+  score/IScoreWritable.h score/Beat.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/iostream \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/istream \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__ostream/basic_ostream.h \
@@ -1233,6 +1233,7 @@ temporary/TempScore.h:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/cstdarg:
 util/util_string.h:
 util/util_types.h:
+../include/config.h:
 score/IScoreWritable.h:
 score/Beat.h:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/iostream:

@@ -538,7 +538,7 @@ util/util_string.o: util/util_string.cpp \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__iterator/empty.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__iterator/reverse_access.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__iterator/size.h \
-  util/util_types.h
+  util/util_types.h ../include/config.h
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/algorithm:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__config:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__config_site:
@@ -1079,3 +1079,4 @@ util/util_string.h:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__iterator/reverse_access.h:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__iterator/size.h:
 util/util_types.h:
+../include/config.h:

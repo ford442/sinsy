@@ -631,9 +631,10 @@ converter/ConfManager.o: converter/ConfManager.cpp \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__fwd/stack.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/print \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/unistd.h \
-  util/util_types.h util/StringTokenizer.h util/Deleter.h \
-  converter/ConfManager.h converter/IConf.h converter/IConvertable.h \
-  score/Syllabic.h converter/util_converter.h util/PhonemeTable.h \
+  util/util_types.h ../include/config.h util/StringTokenizer.h \
+  util/Deleter.h converter/ConfManager.h converter/IConf.h \
+  converter/IConvertable.h score/Syllabic.h converter/util_converter.h \
+  util/PhonemeTable.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/map \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__tree \
   converter/PhonemeInfo.h converter/ConfGroup.h converter/UnknownConf.h \
@@ -1275,6 +1276,7 @@ util/util_log.h:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/print:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/unistd.h:
 util/util_types.h:
+../include/config.h:
 util/StringTokenizer.h:
 util/Deleter.h:
 converter/ConfManager.h:

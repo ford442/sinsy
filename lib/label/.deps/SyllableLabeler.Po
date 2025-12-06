@@ -635,8 +635,9 @@ label/SyllableLabeler.o: label/SyllableLabeler.cpp \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/print \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/unistd.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/filesystem \
-  util/util_types.h label/PhonemeLabeler.h label/IPhonemeLabel.h \
-  converter/PhonemeInfo.h converter/util_converter.h util/PhonemeTable.h \
+  util/util_types.h ../include/config.h label/PhonemeLabeler.h \
+  label/IPhonemeLabel.h converter/PhonemeInfo.h \
+  converter/util_converter.h util/PhonemeTable.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/map \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__tree \
   label/ISyllableLabel.h util/util_log.h \
@@ -1279,6 +1280,7 @@ label/LabelPosition.h:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/unistd.h:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/filesystem:
 util/util_types.h:
+../include/config.h:
 label/PhonemeLabeler.h:
 label/IPhonemeLabel.h:
 converter/PhonemeInfo.h:

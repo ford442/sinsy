@@ -1,5 +1,5 @@
 label/NoteGroup.o: label/NoteGroup.cpp label/NoteGroup.h \
-  util/util_types.h label/LabelPosition.h \
+  util/util_types.h ../include/config.h label/LabelPosition.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/fstream \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__config \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__config_site \
@@ -638,6 +638,7 @@ label/NoteGroup.o: label/NoteGroup.cpp label/NoteGroup.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/iostream
 label/NoteGroup.h:
 util/util_types.h:
+../include/config.h:
 label/LabelPosition.h:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/fstream:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__config:

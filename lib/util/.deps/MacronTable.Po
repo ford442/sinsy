@@ -636,7 +636,8 @@ util/MacronTable.o: util/MacronTable.cpp \
   util/MacronTable.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/map \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__tree \
-  util/StringTokenizer.h util/util_types.h util/util_log.h \
+  util/StringTokenizer.h util/util_types.h ../include/config.h \
+  util/util_log.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/iostream \
   util/util_string.h
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/fstream:
@@ -1278,6 +1279,7 @@ util/MacronTable.h:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__tree:
 util/StringTokenizer.h:
 util/util_types.h:
+../include/config.h:
 util/util_log.h:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/iostream:
 util/util_string.h:

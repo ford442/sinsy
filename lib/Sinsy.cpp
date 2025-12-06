@@ -526,7 +526,7 @@ public:
 
       OutputFile outputFile(xml);
       if (!outputFile.isValid()) {
-         ERR_MSG("Cannot open Xml file");
+         ERR_MSG("Cannot open Xml file: " << xml);
          return false;
       }
 
@@ -966,7 +966,7 @@ bool Sinsy::loadScoreFromMusicXML(const std::string& xml)
    try {
       InputFile xmlFile(xml);
       if(!xmlFile.isValid()) {
-         ERR_MSG("Cannot open Xml file");
+         ERR_MSG("Cannot open Xml file: " << xml);
          return false;
       }
       if (!impl->loadScoreFromMusicXML(xmlFile)) {

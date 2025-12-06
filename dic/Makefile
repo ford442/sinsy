@@ -95,6 +95,7 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 DIST_COMMON = $(srcdir)/Makefile.am $(am__DIST_COMMON)
 mkinstalldirs = $(install_sh) -d
+CONFIG_HEADER = $(top_builddir)/include/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 AM_V_P = $(am__v_P_$(V))
@@ -160,12 +161,12 @@ CC = /workspaces/sinsy/emsdk/upstream/emscripten/emcc
 CCDEPMODE = depmode=gcc3
 CFLAGS = -g -O2
 CPP = /workspaces/sinsy/emsdk/upstream/emscripten/emcc -E
-CPPFLAGS = 
+CPPFLAGS = -I/workspaces/sinsy/wasm_install/include
 CXX = /workspaces/sinsy/emsdk/upstream/emscripten/em++
 CXXDEPMODE = depmode=gcc3
 CXXFLAGS = -std=c++11
 CYGPATH_W = echo
-DEFS = -DPACKAGE_NAME=\"sinsy\" -DPACKAGE_TARNAME=\"sinsy\" -DPACKAGE_VERSION=\"0.92\" -DPACKAGE_STRING=\"sinsy\ 0.92\" -DPACKAGE_BUGREPORT=\"http://sinsy.sourceforge.net/\" -DPACKAGE_URL=\"\" -DPACKAGE=\"sinsy\" -DVERSION=\"0.92\" -DHAVE_LIBM=1 -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DSIZEOF_CHAR=1 -DSIZEOF_UNSIGNED_CHAR=1 -DSIZEOF_SHORT=2 -DSIZEOF_UNSIGNED_SHORT=2 -DSIZEOF_INT=4 -DSIZEOF_UNSIGNED_INT=4 -DSIZEOF_LONG=4 -DSIZEOF_UNSIGNED_LONG=4 -DSIZEOF_LONG_LONG=8 -DSIZEOF_UNSIGNED_LONG_LONG=8 -DHAVE_VPRINTF=1 -DHAVE_SQRT=1 -DHAVE_STRCHR=1 -DHAVE_STRRCHR=1 -DHAVE_STRSTR=1
+DEFS = -DHAVE_CONFIG_H
 DEPDIR = .deps
 ECHO_C = 
 ECHO_N = -n

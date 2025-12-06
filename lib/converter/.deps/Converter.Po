@@ -632,8 +632,8 @@ converter/Converter.o: converter/Converter.cpp \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__fwd/stack.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/print \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/unistd.h \
-  util/util_types.h score/Syllabic.h converter/util_converter.h \
-  util/PhonemeTable.h \
+  util/util_types.h ../include/config.h score/Syllabic.h \
+  converter/util_converter.h util/PhonemeTable.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/map \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__tree \
   converter/PhonemeInfo.h converter/ConfManager.h converter/ConfGroup.h \
@@ -1274,6 +1274,7 @@ util/util_log.h:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/print:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/unistd.h:
 util/util_types.h:
+../include/config.h:
 score/Syllabic.h:
 converter/util_converter.h:
 util/PhonemeTable.h:

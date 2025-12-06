@@ -631,8 +631,8 @@ score/Key.o: score/Key.cpp \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__fwd/stack.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/print \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/unistd.h \
-  util/IStringable.h util/util_types.h score/Mode.h util/util_log.h \
-  util/util_string.h
+  util/IStringable.h util/util_types.h ../include/config.h score/Mode.h \
+  util/util_log.h util/util_string.h
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/algorithm:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__config:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__config_site:
@@ -1267,6 +1267,7 @@ score/Key.h:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/unistd.h:
 util/IStringable.h:
 util/util_types.h:
+../include/config.h:
 score/Mode.h:
 util/util_log.h:
 util/util_string.h:

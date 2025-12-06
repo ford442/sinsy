@@ -7,7 +7,7 @@ sinsy_js_SOURCES = sinsy.cpp
 
 sinsy_js_LDADD = @top_srcdir@/lib/libSinsy.a
 
-sinsy_js_LDFLAGS = -s "EXPORTED_FUNCTIONS=['_main', '_sinsy_main']" -s "EXPORTED_RUNTIME_METHODS=['FS','ccall', 'cwrap', 'callMain']" --preload-file @top_srcdir@/dic@/dic --preload-file @top_srcdir@/voices@/voices --preload-file @top_srcdir@/scores@/scores
+
 
 DISTCLEANFILES = *.log *.out *~
 

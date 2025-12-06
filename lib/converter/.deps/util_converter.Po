@@ -594,7 +594,7 @@ converter/util_converter.o: converter/util_converter.cpp \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/system_error \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/streambuf \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/cstdarg \
-  util/util_types.h util/PhonemeTable.h \
+  util/util_types.h ../include/config.h util/PhonemeTable.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/map \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__functional/is_transparent.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__iterator/erase_if_container.h \
@@ -1237,6 +1237,7 @@ converter/util_converter.h:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/streambuf:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/cstdarg:
 util/util_types.h:
+../include/config.h:
 util/PhonemeTable.h:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/map:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__functional/is_transparent.h:

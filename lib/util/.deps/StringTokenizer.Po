@@ -1,5 +1,5 @@
 util/StringTokenizer.o: util/StringTokenizer.cpp util/StringTokenizer.h \
-  util/util_types.h \
+  util/util_types.h ../include/config.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/string \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__algorithm/max.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__algorithm/comp.h \
@@ -634,6 +634,7 @@ util/StringTokenizer.o: util/StringTokenizer.cpp util/StringTokenizer.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/unistd.h
 util/StringTokenizer.h:
 util/util_types.h:
+../include/config.h:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/string:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__algorithm/max.h:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__algorithm/comp.h:

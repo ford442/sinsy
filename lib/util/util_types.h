@@ -42,6 +42,8 @@
 #ifndef SINSY_UTIL_TYPES_H_
 #define SINSY_UTIL_TYPES_H_
 
+#include "config.h"
+
 namespace sinsy
 {
 

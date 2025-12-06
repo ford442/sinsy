@@ -638,7 +638,7 @@ util/DiphthongConverter.o: util/DiphthongConverter.cpp \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__tree \
   util/util_log.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/iostream \
-  util/util_types.h
+  util/util_types.h ../include/config.h
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/fstream:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__config:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__config_site:
@@ -1279,3 +1279,4 @@ util/DiphthongConverter.h:
 util/util_log.h:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/iostream:
 util/util_types.h:
+../include/config.h:

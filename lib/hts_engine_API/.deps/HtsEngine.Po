@@ -631,9 +631,9 @@ hts_engine_API/HtsEngine.o: hts_engine_API/HtsEngine.cpp \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__fwd/stack.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/print \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/unistd.h \
-  util/util_types.h ../hts_engine_API/include/HTS_engine.h \
-  label/LabelStrings.h label/ILabelOutput.h \
-  hts_engine_API/SynthConditionImpl.h
+  util/util_types.h ../include/config.h \
+  ../hts_engine_API/include/HTS_engine.h label/LabelStrings.h \
+  label/ILabelOutput.h hts_engine_API/SynthConditionImpl.h
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/compat/math.h:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/math.h:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__config:
@@ -1268,6 +1268,7 @@ util/util_log.h:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/print:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/unistd.h:
 util/util_types.h:
+../include/config.h:
 ../hts_engine_API/include/HTS_engine.h:
 label/LabelStrings.h:
 label/ILabelOutput.h:

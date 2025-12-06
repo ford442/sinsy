@@ -632,11 +632,12 @@ xml/XmlReader.o: xml/XmlReader.cpp \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/unistd.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/iostream \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/iomanip \
-  util/util_log.h util/util_types.h score/util_score.h xml/XmlReader.h \
-  util/ForEachAdapter.h score/Beat.h temporary/TempScore.h \
-  util/util_string.h score/IScoreWritable.h score/Dynamics.h score/Key.h \
-  util/IStringable.h score/Mode.h score/Note.h score/Pitch.h \
-  score/Syllabic.h score/Slur.h score/IScoreWriter.h xml/XmlData.h \
+  util/util_log.h util/util_types.h ../include/config.h \
+  score/util_score.h xml/XmlReader.h util/ForEachAdapter.h score/Beat.h \
+  temporary/TempScore.h util/util_string.h score/IScoreWritable.h \
+  score/Dynamics.h score/Key.h util/IStringable.h score/Mode.h \
+  score/Note.h score/Pitch.h score/Syllabic.h score/Slur.h \
+  score/IScoreWriter.h xml/XmlData.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/map \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__tree \
   util/StreamException.h xml/XmlParser.h score/ScorePosition.h \
@@ -1276,6 +1277,7 @@ xml/XmlReader.o: xml/XmlReader.cpp \
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/iomanip:
 util/util_log.h:
 util/util_types.h:
+../include/config.h:
 score/util_score.h:
 xml/XmlReader.h:
 util/ForEachAdapter.h:

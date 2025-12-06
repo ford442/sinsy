@@ -632,10 +632,11 @@ label/NoteLabeler.o: label/NoteLabeler.cpp \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/unistd.h \
   util/util_log.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/iostream \
-  util/util_types.h label/NoteLabeler.h score/Pitch.h util/IStringable.h \
-  score/Beat.h score/Key.h score/Mode.h score/Syllabic.h \
-  score/Dynamics.h score/Note.h score/Slur.h converter/IConvertable.h \
-  converter/util_converter.h util/PhonemeTable.h \
+  util/util_types.h ../include/config.h label/NoteLabeler.h \
+  score/Pitch.h util/IStringable.h score/Beat.h score/Key.h score/Mode.h \
+  score/Syllabic.h score/Dynamics.h score/Note.h score/Slur.h \
+  converter/IConvertable.h converter/util_converter.h \
+  util/PhonemeTable.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/map \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__tree \
   converter/PhonemeInfo.h label/LabelPosition.h \
@@ -1280,6 +1281,7 @@ label/NoteLabeler.o: label/NoteLabeler.cpp \
 util/util_log.h:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/iostream:
 util/util_types.h:
+../include/config.h:
 label/NoteLabeler.h:
 score/Pitch.h:
 util/IStringable.h:

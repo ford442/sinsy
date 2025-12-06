@@ -2,6 +2,7 @@
 AC_PREREQ(2.59)
 AC_INIT(sinsy, 0.92, http://sinsy.sourceforge.net/)
 AC_CONFIG_AUX_DIR([config])
+AC_CONFIG_HEADERS([include/config.h])
 AC_COPYRIGHT(Copyright 2009-2015 Nagoya Institute of Technology)
 AM_INIT_AUTOMAKE(subdir-objects)
 

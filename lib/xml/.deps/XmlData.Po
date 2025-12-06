@@ -617,7 +617,8 @@ xml/XmlData.o: xml/XmlData.cpp \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__type_traits/strip_signature.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/unordered_map \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__hash_table \
-  util/StreamException.h util/util_types.h util/IStringable.h \
+  util/StreamException.h util/util_types.h ../include/config.h \
+  util/IStringable.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/iostream \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/istream \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__ostream/basic_ostream.h \
@@ -1255,6 +1256,7 @@ xml/XmlData.h:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__hash_table:
 util/StreamException.h:
 util/util_types.h:
+../include/config.h:
 util/IStringable.h:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/iostream:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/istream:

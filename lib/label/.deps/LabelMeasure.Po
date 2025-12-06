@@ -1,5 +1,5 @@
 label/LabelMeasure.o: label/LabelMeasure.cpp label/LabelMeasure.h \
-  util/util_types.h label/LabelPosition.h \
+  util/util_types.h ../include/config.h label/LabelPosition.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/fstream \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__config \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__config_site \
@@ -639,6 +639,7 @@ label/LabelMeasure.o: label/LabelMeasure.cpp label/LabelMeasure.h \
   util/util_log.h score/util_score.h score/ScorePosition.h
 label/LabelMeasure.h:
 util/util_types.h:
+../include/config.h:
 label/LabelPosition.h:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/fstream:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__config:

@@ -1,5 +1,5 @@
 #!/bin/bash
-source /content/build_space/emsdk/emsdk_env.sh # Uncomment if running in an environment where this is needed
+source /workspaces/sinsy/emsdk/emsdk_env.sh
 
 set -e # Exit immediately if any command fails
 
@@ -43,13 +43,12 @@ update_config_scripts
 # FIX: Added 'FS' and 'callMain' to EXPORTED_RUNTIME_METHODS
 # FIX: Added INVOKE_RUN=0 so it waits for your button click instead of running immediately
 emconfigure ./configure \
-  --with-hts-engine-header-path="$INSTALL_DIR/include" \
-  --with-hts-engine-library-path="$INSTALL_DIR/lib" \
   --host=wasm32-unknown-emscripten \
-  LDFLAGS="-s \"EXPORTED_FUNCTIONS=['_main']\" -s \"EXPORTED_RUNTIME_METHODS=['FS','callMain']\" -s ALLOW_MEMORY_GROWTH=1 -s INVOKE_RUN=0 --preload-file dic@/dic --preload-file voices@/voices --preload-file scores@/scores"
+  CPPFLAGS="-I$INSTALL_DIR/include"
 
 # Compile Sinsy
-emmake make -j$(nproc)
+emmake make -j$(nproc) \
+  LDFLAGS="-L$INSTALL_DIR/lib -s EXPORTED_FUNCTIONS=[_main] -s EXPORTED_RUNTIME_METHODS=[FS,callMain] -s DISABLE_EXCEPTION_CATCHING=0 -s ALLOW_MEMORY_GROWTH=1 -s INVOKE_RUN=0 --preload-file dic@/dic --preload-file voices@/voices --preload-file scores@/scores"
 
 # Rename output to .js if needed
 if [ -f bin/sinsy ] && [ ! -f bin/sinsy.js ]; then

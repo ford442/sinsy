@@ -98,6 +98,7 @@ DIST_COMMON = $(srcdir)/Makefile.am $(top_srcdir)/configure \
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
+CONFIG_HEADER = $(top_builddir)/include/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 AM_V_P = $(am__v_P_$(V))
@@ -189,9 +190,10 @@ am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/config/compile \
 	$(top_srcdir)/config/config.guess \
 	$(top_srcdir)/config/config.sub \
 	$(top_srcdir)/config/install-sh $(top_srcdir)/config/missing \
-	AUTHORS COPYING ChangeLog INSTALL NEWS README config/compile \
-	config/config.guess config/config.sub config/depcomp \
-	config/install-sh config/missing
+	$(top_srcdir)/include/config.h.in AUTHORS COPYING ChangeLog \
+	INSTALL NEWS README config/compile config/config.guess \
+	config/config.sub config/depcomp config/install-sh \
+	config/missing
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -246,12 +248,12 @@ CC = /workspaces/sinsy/emsdk/upstream/emscripten/emcc
 CCDEPMODE = depmode=gcc3
 CFLAGS = -g -O2
 CPP = /workspaces/sinsy/emsdk/upstream/emscripten/emcc -E
-CPPFLAGS = 
+CPPFLAGS = -I/workspaces/sinsy/wasm_install/include
 CXX = /workspaces/sinsy/emsdk/upstream/emscripten/em++
 CXXDEPMODE = depmode=gcc3
 CXXFLAGS = -std=c++11
 CYGPATH_W = echo
-DEFS = -DPACKAGE_NAME=\"sinsy\" -DPACKAGE_TARNAME=\"sinsy\" -DPACKAGE_VERSION=\"0.92\" -DPACKAGE_STRING=\"sinsy\ 0.92\" -DPACKAGE_BUGREPORT=\"http://sinsy.sourceforge.net/\" -DPACKAGE_URL=\"\" -DPACKAGE=\"sinsy\" -DVERSION=\"0.92\" -DHAVE_LIBM=1 -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DSIZEOF_CHAR=1 -DSIZEOF_UNSIGNED_CHAR=1 -DSIZEOF_SHORT=2 -DSIZEOF_UNSIGNED_SHORT=2 -DSIZEOF_INT=4 -DSIZEOF_UNSIGNED_INT=4 -DSIZEOF_LONG=4 -DSIZEOF_UNSIGNED_LONG=4 -DSIZEOF_LONG_LONG=8 -DSIZEOF_UNSIGNED_LONG_LONG=8 -DHAVE_VPRINTF=1 -DHAVE_SQRT=1 -DHAVE_STRCHR=1 -DHAVE_STRRCHR=1 -DHAVE_STRSTR=1
+DEFS = -DHAVE_CONFIG_H
 DEPDIR = .deps
 ECHO_C = 
 ECHO_N = -n
@@ -380,6 +382,21 @@ $(top_srcdir)/configure:  $(am__configure_deps)
 $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	$(am__cd) $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
 $(am__aclocal_m4_deps):
+
+include/config.h: include/stamp-h1
+	@test -f $@ || rm -f include/stamp-h1
+	@test -f $@ || $(MAKE) $(AM_MAKEFLAGS) include/stamp-h1
+
+include/stamp-h1: $(top_srcdir)/include/config.h.in $(top_builddir)/config.status
+	@rm -f include/stamp-h1
+	cd $(top_builddir) && $(SHELL) ./config.status include/config.h
+$(top_srcdir)/include/config.h.in:  $(am__configure_deps) 
+	($(am__cd) $(top_srcdir) && $(AUTOHEADER))
+	rm -f include/stamp-h1
+	touch $@
+
+distclean-hdr:
+	-rm -f include/config.h include/stamp-h1
 install-includeHEADERS: $(include_HEADERS)
 	@$(NORMAL_INSTALL)
 	@list='$(include_HEADERS)'; test -n "$(includedir)" || list=; \
@@ -746,7 +763,7 @@ clean-am: clean-generic mostlyclean-am
 distclean: distclean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
 	-rm -f Makefile
-distclean-am: clean-am distclean-generic distclean-tags
+distclean-am: clean-am distclean-generic distclean-hdr distclean-tags
 
 dvi: dvi-recursive
 
@@ -814,11 +831,11 @@ uninstall-am: uninstall-includeHEADERS
 	am--refresh check check-am clean clean-cscope clean-generic \
 	cscope cscopelist-am ctags ctags-am dist dist-all dist-bzip2 \
 	dist-gzip dist-lzip dist-shar dist-tarZ dist-xz dist-zip \
-	distcheck distclean distclean-generic distclean-tags \
-	distcleancheck distdir distuninstallcheck dvi dvi-am html \
-	html-am info info-am install install-am install-data \
-	install-data-am install-dvi install-dvi-am install-exec \
-	install-exec-am install-html install-html-am \
+	distcheck distclean distclean-generic distclean-hdr \
+	distclean-tags distcleancheck distdir distuninstallcheck dvi \
+	dvi-am html html-am info info-am install install-am \
+	install-data install-data-am install-dvi install-dvi-am \
+	install-exec install-exec-am install-html install-html-am \
 	install-includeHEADERS install-info install-info-am \
 	install-man install-pdf install-pdf-am install-ps \
 	install-ps-am install-strip installcheck installcheck-am \

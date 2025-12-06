@@ -633,9 +633,9 @@ label/LabelMaker.o: label/LabelMaker.cpp \
   label/LabelMaker.h score/IScoreWritable.h score/Beat.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/iostream \
   score/Dynamics.h score/Key.h util/IStringable.h util/util_types.h \
-  score/Mode.h score/Note.h score/Pitch.h score/Syllabic.h score/Slur.h \
-  converter/IConvertable.h util/util_log.h converter/util_converter.h \
-  util/PhonemeTable.h \
+  ../include/config.h score/Mode.h score/Note.h score/Pitch.h \
+  score/Syllabic.h score/Slur.h converter/IConvertable.h util/util_log.h \
+  converter/util_converter.h util/PhonemeTable.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/map \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__tree \
   converter/PhonemeInfo.h converter/Converter.h converter/IConf.h \
@@ -1290,6 +1290,7 @@ score/Dynamics.h:
 score/Key.h:
 util/IStringable.h:
 util/util_types.h:
+../include/config.h:
 score/Mode.h:
 score/Note.h:
 score/Pitch.h:

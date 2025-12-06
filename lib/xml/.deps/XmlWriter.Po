@@ -634,9 +634,9 @@ xml/XmlWriter.o: xml/XmlWriter.cpp \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/iomanip \
   xml/XmlWriter.h util/ForEachAdapter.h score/Beat.h \
   temporary/TempScore.h util/util_string.h util/util_types.h \
-  score/IScoreWritable.h score/Dynamics.h score/Key.h util/IStringable.h \
-  score/Mode.h score/Note.h score/Pitch.h score/Syllabic.h score/Slur.h \
-  score/IScoreWriter.h xml/XmlData.h \
+  ../include/config.h score/IScoreWritable.h score/Dynamics.h \
+  score/Key.h util/IStringable.h score/Mode.h score/Note.h score/Pitch.h \
+  score/Syllabic.h score/Slur.h score/IScoreWriter.h xml/XmlData.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/map \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__tree \
   util/StreamException.h util/util_log.h score/ScorePosition.h \
@@ -1284,6 +1284,7 @@ score/Beat.h:
 temporary/TempScore.h:
 util/util_string.h:
 util/util_types.h:
+../include/config.h:
 score/IScoreWritable.h:
 score/Dynamics.h:
 score/Key.h:

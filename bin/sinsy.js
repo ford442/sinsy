@@ -71,156 +71,6 @@ var ENVIRONMENT_IS_SHELL = !ENVIRONMENT_IS_WEB && !ENVIRONMENT_IS_NODE && !ENVIR
 
 // --pre-jses are emitted after the Module integration code, so that they can
 // refer to Module (if they choose; they can also define Module)
-// include: /tmp/tmp9liuselr.js
-
-  if (!Module['expectedDataFileDownloads']) Module['expectedDataFileDownloads'] = 0;
-  Module['expectedDataFileDownloads']++;
-  (() => {
-    // Do not attempt to redownload the virtual filesystem data when in a pthread or a Wasm Worker context.
-    var isPthread = typeof ENVIRONMENT_IS_PTHREAD != 'undefined' && ENVIRONMENT_IS_PTHREAD;
-    var isWasmWorker = typeof ENVIRONMENT_IS_WASM_WORKER != 'undefined' && ENVIRONMENT_IS_WASM_WORKER;
-    if (isPthread || isWasmWorker) return;
-    var isNode = globalThis.process && globalThis.process.versions && globalThis.process.versions.node && globalThis.process.type != 'renderer';
-    async function loadPackage(metadata) {
-
-      var PACKAGE_PATH = '';
-      if (typeof window === 'object') {
-        PACKAGE_PATH = window['encodeURIComponent'](window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/')) + '/');
-      } else if (typeof process === 'undefined' && typeof location !== 'undefined') {
-        // web worker
-        PACKAGE_PATH = encodeURIComponent(location.pathname.substring(0, location.pathname.lastIndexOf('/')) + '/');
-      }
-      var PACKAGE_NAME = 'sinsy.data';
-      var REMOTE_PACKAGE_BASE = 'sinsy.data';
-      var REMOTE_PACKAGE_NAME = Module['locateFile'] ? Module['locateFile'](REMOTE_PACKAGE_BASE, '') : REMOTE_PACKAGE_BASE;
-      var REMOTE_PACKAGE_SIZE = metadata['remote_package_size'];
-
-      async function fetchRemotePackage(packageName, packageSize) {
-        if (isNode) {
-          var contents = require('fs').readFileSync(packageName);
-          return new Uint8Array(contents).buffer;
-        }
-        if (!Module['dataFileDownloads']) Module['dataFileDownloads'] = {};
-        try {
-          var response = await fetch(packageName);
-        } catch (e) {
-          throw new Error(`Network Error: ${packageName}`, {e});
-        }
-        if (!response.ok) {
-          throw new Error(`${response.status}: ${response.url}`);
-        }
-
-        const chunks = [];
-        const headers = response.headers;
-        const total = Number(headers.get('Content-Length') || packageSize);
-        let loaded = 0;
-
-        Module['setStatus'] && Module['setStatus']('Downloading data...');
-        const reader = response.body.getReader();
-
-        while (1) {
-          var {done, value} = await reader.read();
-          if (done) break;
-          chunks.push(value);
-          loaded += value.length;
-          Module['dataFileDownloads'][packageName] = {loaded, total};
-
-          let totalLoaded = 0;
-          let totalSize = 0;
-
-          for (const download of Object.values(Module['dataFileDownloads'])) {
-            totalLoaded += download.loaded;
-            totalSize += download.total;
-          }
-
-          Module['setStatus'] && Module['setStatus'](`Downloading data... (${totalLoaded}/${totalSize})`);
-        }
-
-        const packageData = new Uint8Array(chunks.map((c) => c.length).reduce((a, b) => a + b, 0));
-        let offset = 0;
-        for (const chunk of chunks) {
-          packageData.set(chunk, offset);
-          offset += chunk.length;
-        }
-        return packageData.buffer;
-      }
-
-      var fetchPromise;
-      var fetched = Module['getPreloadedPackage'] && Module['getPreloadedPackage'](REMOTE_PACKAGE_NAME, REMOTE_PACKAGE_SIZE);
-
-      if (!fetched) {
-        // Note that we don't use await here because we want to execute the
-        // the rest of this function immediately.
-        fetchPromise = fetchRemotePackage(REMOTE_PACKAGE_NAME, REMOTE_PACKAGE_SIZE);
-      }
-
-    async function runWithFS(Module) {
-
-      function assert(check, msg) {
-        if (!check) throw new Error(msg);
-      }
-Module['FS_createPath']("/", "dic", true, true);
-Module['FS_createPath']("/", "scores", true, true);
-Module['FS_createPath']("/", "voices", true, true);
-
-    for (var file of metadata['files']) {
-      var name = file['filename']
-      Module['addRunDependency'](`fp ${name}`);
-    }
-
-      async function processPackageData(arrayBuffer) {
-        assert(arrayBuffer, 'Loading data file failed.');
-        assert(arrayBuffer.constructor.name === ArrayBuffer.name, 'bad input to processPackageData ' + arrayBuffer.constructor.name);
-        var byteArray = new Uint8Array(arrayBuffer);
-        var curr;
-        // Reuse the bytearray from the XHR as the source for file reads.
-          for (var file of metadata['files']) {
-            var name = file['filename'];
-            var data = byteArray.subarray(file['start'], file['end']);
-            // canOwn this data in the filesystem, it is a slice into the heap that will never change
-        Module['FS_createDataFile'](name, null, data, true, true, true);
-        Module['removeRunDependency'](`fp ${name}`);
-          }
-          Module['removeRunDependency']('datafile_sinsy.data');
-      }
-      Module['addRunDependency']('datafile_sinsy.data');
-
-      if (!Module['preloadResults']) Module['preloadResults'] = {};
-
-      Module['preloadResults'][PACKAGE_NAME] = {fromCache: false};
-      if (!fetched) {
-        fetched = await fetchPromise;
-      }
-      processPackageData(fetched);
-
-    }
-    if (Module['calledRun']) {
-      runWithFS(Module);
-    } else {
-      if (!Module['preRun']) Module['preRun'] = [];
-      Module['preRun'].push(runWithFS); // FS is not initialized yet, wait for it
-    }
-
-    }
-    loadPackage({"files": [{"filename": "/dic/Makefile", "start": 0, "end": 15169}, {"filename": "/dic/Makefile.am", "start": 15169, "end": 15585}, {"filename": "/dic/Makefile.in", "start": 15585, "end": 29635}, {"filename": "/dic/japanese.euc_jp.conf", "start": 29635, "end": 29752}, {"filename": "/dic/japanese.euc_jp.table", "start": 29752, "end": 32627}, {"filename": "/dic/japanese.macron", "start": 32627, "end": 32627}, {"filename": "/dic/japanese.shift_jis.conf", "start": 32627, "end": 32732}, {"filename": "/dic/japanese.shift_jis.table", "start": 32732, "end": 35607}, {"filename": "/dic/japanese.utf_8.conf", "start": 35607, "end": 35679}, {"filename": "/dic/japanese.utf_8.table", "start": 35679, "end": 39165}, {"filename": "/scores/Ave_Maria_D839_-_Schubert_-_Solo_Piano_Arrg.mxl", "start": 39165, "end": 50708}, {"filename": "/voices/nitech_jp_song070_f001.htsvoice", "start": 50708, "end": 5720146}], "remote_package_size": 5720146});
-
-  })();
-
-// end include: /tmp/tmp9liuselr.js
-// include: /tmp/tmppm9_6vlp.js
-
-    // All the pre-js content up to here must remain later on, we need to run
-    // it.
-    if ((typeof ENVIRONMENT_IS_WASM_WORKER != 'undefined' && ENVIRONMENT_IS_WASM_WORKER) || (typeof ENVIRONMENT_IS_PTHREAD != 'undefined' && ENVIRONMENT_IS_PTHREAD) || (typeof ENVIRONMENT_IS_AUDIO_WORKLET != 'undefined' && ENVIRONMENT_IS_AUDIO_WORKLET)) Module['preRun'] = [];
-    var necessaryPreJSTasks = Module['preRun'].slice();
-  // end include: /tmp/tmppm9_6vlp.js
-// include: /tmp/tmpgnyq4mk8.js
-
-    if (!Module['preRun']) throw 'Module.preRun should exist because file support used it; did a pre-js delete it?';
-    necessaryPreJSTasks.forEach((task) => {
-      if (Module['preRun'].indexOf(task) < 0) throw 'All preRun tasks that exist before user pre-js code should remain after; did you replace Module or modify Module.preRun?';
-    });
-  // end include: /tmp/tmpgnyq4mk8.js
 
 
 var arguments_ = [];
@@ -4321,102 +4171,6 @@ async function createWasm() {
       return ret;
     };
 
-
-
-  var getCFunc = (ident) => {
-      var func = Module['_' + ident]; // closure exported function
-      assert(func, 'Cannot call unknown function ' + ident + ', make sure it is exported');
-      return func;
-    };
-  
-  var writeArrayToMemory = (array, buffer) => {
-      assert(array.length >= 0, 'writeArrayToMemory array must have a length (should be an array or typed array)')
-      HEAP8.set(array, buffer);
-    };
-  
-  
-  
-  
-  
-  
-    /**
-     * @param {string|null=} returnType
-     * @param {Array=} argTypes
-     * @param {Array=} args
-     * @param {Object=} opts
-     */
-  var ccall = (ident, returnType, argTypes, args, opts) => {
-      // For fast lookup of conversion functions
-      var toC = {
-        'string': (str) => {
-          var ret = 0;
-          if (str !== null && str !== undefined && str !== 0) { // null string
-            ret = stringToUTF8OnStack(str);
-          }
-          return ret;
-        },
-        'array': (arr) => {
-          var ret = stackAlloc(arr.length);
-          writeArrayToMemory(arr, ret);
-          return ret;
-        }
-      };
-  
-      function convertReturnValue(ret) {
-        if (returnType === 'string') {
-          return UTF8ToString(ret);
-        }
-        if (returnType === 'boolean') return Boolean(ret);
-        return ret;
-      }
-  
-      var func = getCFunc(ident);
-      var cArgs = [];
-      var stack = 0;
-      assert(returnType !== 'array', 'Return type should not be "array".');
-      if (args) {
-        for (var i = 0; i < args.length; i++) {
-          var converter = toC[argTypes[i]];
-          if (converter) {
-            if (stack === 0) stack = stackSave();
-            cArgs[i] = converter(args[i]);
-          } else {
-            cArgs[i] = args[i];
-          }
-        }
-      }
-      var ret = func(...cArgs);
-      function onDone(ret) {
-        if (stack !== 0) stackRestore(stack);
-        return convertReturnValue(ret);
-      }
-  
-      ret = onDone(ret);
-      return ret;
-    };
-
-  
-    /**
-     * @param {string=} returnType
-     * @param {Array=} argTypes
-     * @param {Object=} opts
-     */
-  var cwrap = (ident, returnType, argTypes, opts) => {
-      return (...args) => ccall(ident, returnType, argTypes, args, opts);
-    };
-
-  var FS_createPath = (...args) => FS.createPath(...args);
-
-
-
-  var FS_unlink = (...args) => FS.unlink(...args);
-
-  var FS_createLazyFile = (...args) => FS.createLazyFile(...args);
-
-  var FS_createDevice = (...args) => FS.createDevice(...args);
-
-
-
   FS.createPreloadedFile = FS_createPreloadedFile;
   FS.preloadFile = FS_preloadFile;
   FS.staticInit();;
@@ -4467,18 +4221,6 @@ if (Module['wasmBinary']) wasmBinary = Module['wasmBinary'];
 }
 
 // Begin runtime exports
-  Module['callMain'] = callMain;
-  Module['addRunDependency'] = addRunDependency;
-  Module['removeRunDependency'] = removeRunDependency;
-  Module['ccall'] = ccall;
-  Module['cwrap'] = cwrap;
-  Module['FS_preloadFile'] = FS_preloadFile;
-  Module['FS_unlink'] = FS_unlink;
-  Module['FS_createPath'] = FS_createPath;
-  Module['FS_createDevice'] = FS_createDevice;
-  Module['FS'] = FS;
-  Module['FS_createDataFile'] = FS_createDataFile;
-  Module['FS_createLazyFile'] = FS_createLazyFile;
   var missingLibrarySymbols = [
   'writeI53ToI64',
   'writeI53ToI64Clamped',
@@ -4523,6 +4265,8 @@ if (Module['wasmBinary']) wasmBinary = Module['wasmBinary'];
   'STACK_ALIGN',
   'POINTER_SIZE',
   'ASSERTIONS',
+  'ccall',
+  'cwrap',
   'convertJsFunctionToWasm',
   'getEmptyTableSlot',
   'updateTableMap',
@@ -4539,6 +4283,7 @@ if (Module['wasmBinary']) wasmBinary = Module['wasmBinary'];
   'stringToUTF32',
   'lengthBytesUTF32',
   'stringToNewUTF8',
+  'writeArrayToMemory',
   'registerKeyEventCallback',
   'maybeCStringToJsString',
   'findEventTarget',
@@ -4644,6 +4389,7 @@ missingLibrarySymbols.forEach(missingLibrarySymbol)
   'run',
   'out',
   'err',
+  'callMain',
   'abort',
   'wasmExports',
   'HEAPF32',
@@ -4685,6 +4431,8 @@ missingLibrarySymbols.forEach(missingLibrarySymbol)
   'wasmMemory',
   'getUniqueRunDependency',
   'noExitRuntime',
+  'addRunDependency',
+  'removeRunDependency',
   'addOnPreRun',
   'addOnPostRun',
   'freeTableIndexes',
@@ -4702,7 +4450,6 @@ missingLibrarySymbols.forEach(missingLibrarySymbol)
   'intArrayFromString',
   'UTF16Decoder',
   'stringToUTF8OnStack',
-  'writeArrayToMemory',
   'JSEvents',
   'specialHTMLTargets',
   'findCanvasEventTarget',
@@ -4738,11 +4485,16 @@ missingLibrarySymbols.forEach(missingLibrarySymbol)
   'SYSCALLS',
   'preloadPlugins',
   'FS_createPreloadedFile',
+  'FS_preloadFile',
   'FS_modeStringToFlags',
   'FS_getMode',
   'FS_stdin_getChar_buffer',
   'FS_stdin_getChar',
+  'FS_unlink',
+  'FS_createPath',
+  'FS_createDevice',
   'FS_readFile',
+  'FS',
   'FS_root',
   'FS_mounts',
   'FS_devices',
@@ -4846,7 +4598,9 @@ missingLibrarySymbols.forEach(missingLibrarySymbol)
   'FS_findObject',
   'FS_analyzePath',
   'FS_createFile',
+  'FS_createDataFile',
   'FS_forceLoadFile',
+  'FS_createLazyFile',
   'FS_absolutePath',
   'FS_createFolder',
   'FS_createLink',
@@ -4885,7 +4639,6 @@ function checkIncomingModuleAPI() {
 }
 
 // Imports from the Wasm binary.
-var _sinsy_main = Module['_sinsy_main'] = makeInvalidEarlyAccess('_sinsy_main');
 var _main = Module['_main'] = makeInvalidEarlyAccess('_main');
 var _fflush = makeInvalidEarlyAccess('_fflush');
 var _emscripten_stack_get_end = makeInvalidEarlyAccess('_emscripten_stack_get_end');
@@ -4901,7 +4654,6 @@ var __indirect_function_table = makeInvalidEarlyAccess('__indirect_function_tabl
 var wasmMemory = makeInvalidEarlyAccess('wasmMemory');
 
 function assignWasmExports(wasmExports) {
-  assert(typeof wasmExports['sinsy_main'] != 'undefined', 'missing Wasm export: sinsy_main');
   assert(typeof wasmExports['__main_argc_argv'] != 'undefined', 'missing Wasm export: __main_argc_argv');
   assert(typeof wasmExports['fflush'] != 'undefined', 'missing Wasm export: fflush');
   assert(typeof wasmExports['emscripten_stack_get_end'] != 'undefined', 'missing Wasm export: emscripten_stack_get_end');
@@ -4914,7 +4666,6 @@ function assignWasmExports(wasmExports) {
   assert(typeof wasmExports['emscripten_stack_get_current'] != 'undefined', 'missing Wasm export: emscripten_stack_get_current');
   assert(typeof wasmExports['memory'] != 'undefined', 'missing Wasm export: memory');
   assert(typeof wasmExports['__indirect_function_table'] != 'undefined', 'missing Wasm export: __indirect_function_table');
-  _sinsy_main = Module['_sinsy_main'] = createExportWrapper('sinsy_main', 2);
   _main = Module['_main'] = createExportWrapper('__main_argc_argv', 2);
   _fflush = createExportWrapper('fflush', 1);
   _emscripten_stack_get_end = wasmExports['emscripten_stack_get_end'];

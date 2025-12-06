@@ -631,7 +631,8 @@ score/Note.o: score/Note.cpp score/Note.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__fwd/stack.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/print \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/unistd.h \
-  util/IStringable.h util/util_types.h score/Syllabic.h score/Slur.h
+  util/IStringable.h util/util_types.h ../include/config.h \
+  score/Syllabic.h score/Slur.h
 score/Note.h:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/string:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__algorithm/max.h:
@@ -1267,5 +1268,6 @@ score/Pitch.h:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/unistd.h:
 util/IStringable.h:
 util/util_types.h:
+../include/config.h:
 score/Syllabic.h:
 score/Slur.h:

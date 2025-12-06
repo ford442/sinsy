@@ -633,7 +633,8 @@ xml/XmlParser.o: xml/XmlParser.cpp \
   xml/XmlParser.h xml/XmlData.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/map \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__tree \
-  util/StreamException.h util/util_types.h util/IStringable.h \
+  util/StreamException.h util/util_types.h ../include/config.h \
+  util/IStringable.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/iostream \
   score/Beat.h util/InputFile.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/fstream \
@@ -1278,6 +1279,7 @@ xml/XmlData.h:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__tree:
 util/StreamException.h:
 util/util_types.h:
+../include/config.h:
 util/IStringable.h:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/iostream:
 score/Beat.h:

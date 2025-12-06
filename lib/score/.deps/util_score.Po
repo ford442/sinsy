@@ -633,7 +633,8 @@ score/util_score.o: score/util_score.cpp score/util_score.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/print \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/unistd.h \
   score/Dynamics.h score/Key.h util/IStringable.h util/util_types.h \
-  score/Mode.h score/Note.h score/Pitch.h score/Syllabic.h score/Slur.h
+  ../include/config.h score/Mode.h score/Note.h score/Pitch.h \
+  score/Syllabic.h score/Slur.h
 score/util_score.h:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/cstddef:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__config:
@@ -1273,6 +1274,7 @@ score/Dynamics.h:
 score/Key.h:
 util/IStringable.h:
 util/util_types.h:
+../include/config.h:
 score/Mode.h:
 score/Note.h:
 score/Pitch.h:

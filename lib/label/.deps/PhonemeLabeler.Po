@@ -594,7 +594,8 @@ label/PhonemeLabeler.o: label/PhonemeLabeler.cpp label/PhonemeLabeler.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/streambuf \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/cstdarg \
   label/IPhonemeLabel.h converter/PhonemeInfo.h \
-  converter/util_converter.h util/util_types.h util/PhonemeTable.h \
+  converter/util_converter.h util/util_types.h ../include/config.h \
+  util/PhonemeTable.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/map \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__functional/is_transparent.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__iterator/erase_if_container.h \
@@ -1234,6 +1235,7 @@ label/IPhonemeLabel.h:
 converter/PhonemeInfo.h:
 converter/util_converter.h:
 util/util_types.h:
+../include/config.h:
 util/PhonemeTable.h:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/map:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__functional/is_transparent.h:

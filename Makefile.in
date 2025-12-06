@@ -98,6 +98,7 @@ DIST_COMMON = $(srcdir)/Makefile.am $(top_srcdir)/configure \
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
+CONFIG_HEADER = $(top_builddir)/include/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 AM_V_P = $(am__v_P_@AM_V@)
@@ -189,9 +190,10 @@ am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/config/compile \
 	$(top_srcdir)/config/config.guess \
 	$(top_srcdir)/config/config.sub \
 	$(top_srcdir)/config/install-sh $(top_srcdir)/config/missing \
-	AUTHORS COPYING ChangeLog INSTALL NEWS README config/compile \
-	config/config.guess config/config.sub config/depcomp \
-	config/install-sh config/missing
+	$(top_srcdir)/include/config.h.in AUTHORS COPYING ChangeLog \
+	INSTALL NEWS README config/compile config/config.guess \
+	config/config.sub config/depcomp config/install-sh \
+	config/missing
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -380,6 +382,21 @@ $(top_srcdir)/configure:  $(am__configure_deps)
 $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	$(am__cd) $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
 $(am__aclocal_m4_deps):
+
+include/config.h: include/stamp-h1
+	@test -f $@ || rm -f include/stamp-h1
+	@test -f $@ || $(MAKE) $(AM_MAKEFLAGS) include/stamp-h1
+
+include/stamp-h1: $(top_srcdir)/include/config.h.in $(top_builddir)/config.status
+	@rm -f include/stamp-h1
+	cd $(top_builddir) && $(SHELL) ./config.status include/config.h
+$(top_srcdir)/include/config.h.in:  $(am__configure_deps) 
+	($(am__cd) $(top_srcdir) && $(AUTOHEADER))
+	rm -f include/stamp-h1
+	touch $@
+
+distclean-hdr:
+	-rm -f include/config.h include/stamp-h1
 install-includeHEADERS: $(include_HEADERS)
 	@$(NORMAL_INSTALL)
 	@list='$(include_HEADERS)'; test -n "$(includedir)" || list=; \
@@ -746,7 +763,7 @@ clean-am: clean-generic mostlyclean-am
 distclean: distclean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
 	-rm -f Makefile
-distclean-am: clean-am distclean-generic distclean-tags
+distclean-am: clean-am distclean-generic distclean-hdr distclean-tags
 
 dvi: dvi-recursive
 
@@ -814,11 +831,11 @@ uninstall-am: uninstall-includeHEADERS
 	am--refresh check check-am clean clean-cscope clean-generic \
 	cscope cscopelist-am ctags ctags-am dist dist-all dist-bzip2 \
 	dist-gzip dist-lzip dist-shar dist-tarZ dist-xz dist-zip \
-	distcheck distclean distclean-generic distclean-tags \
-	distcleancheck distdir distuninstallcheck dvi dvi-am html \
-	html-am info info-am install install-am install-data \
-	install-data-am install-dvi install-dvi-am install-exec \
-	install-exec-am install-html install-html-am \
+	distcheck distclean distclean-generic distclean-hdr \
+	distclean-tags distcleancheck distdir distuninstallcheck dvi \
+	dvi-am html html-am info info-am install install-am \
+	install-data install-data-am install-dvi install-dvi-am \
+	install-exec install-exec-am install-html install-html-am \
 	install-includeHEADERS install-info install-info-am \
 	install-man install-pdf install-pdf-am install-ps \
 	install-ps-am install-strip installcheck installcheck-am \

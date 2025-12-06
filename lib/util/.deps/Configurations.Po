@@ -637,7 +637,7 @@ util/Configurations.o: util/Configurations.cpp \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/map \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__tree \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/sstream \
-  util/util_types.h util/util_log.h \
+  util/util_types.h ../include/config.h util/util_log.h \
   /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/iostream \
   util/util_string.h util/StringTokenizer.h
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/fstream:
@@ -1279,6 +1279,7 @@ util/Configurations.h:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__tree:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/sstream:
 util/util_types.h:
+../include/config.h:
 util/util_log.h:
 /workspaces/sinsy/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/iostream:
 util/util_string.h:
