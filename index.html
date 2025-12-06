@@ -156,7 +156,7 @@ runButton.addEventListener('click', async () => {
 
         const voices = await fetchDirEntries('./voices/');
         voices.filter(f => f.toLowerCase().endsWith('.htsvoice')).forEach(f => {
-          const path = '/voices/' + f;
+          const path = './voices/' + f;
           const opt = document.createElement('option');
           opt.value = path;
           opt.textContent = f;
@@ -165,7 +165,7 @@ runButton.addEventListener('click', async () => {
 
         const mxls = await fetchDirEntries('./scores/');
         mxls.filter(f => f.toLowerCase().endsWith('.mxl') || f.toLowerCase().endsWith('.xml')).forEach(f => {
-          const path = '/scores/' + f;
+          const path = './scores/' + f;
           const opt = document.createElement('option');
           opt.value = path;
           opt.textContent = f;
