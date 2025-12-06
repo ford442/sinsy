@@ -1,5 +1,5 @@
 #!/bin/bash
-source /workspaces/sinsy/emsdk/emsdk_env.sh
+source /content/build_space/emsdk/emsdk_env.sh
 
 set -e # Exit immediately if any command fails
 
