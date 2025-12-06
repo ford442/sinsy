@@ -54,16 +54,19 @@ class GeneralConf : public IConf
 {
 public:
    //! constructor
-   explicit GeneralConf(const std::string& enc);
+   GeneralConf();
 
    //! destructor
    virtual ~GeneralConf();
 
    //! read files
-   virtual bool read(const std::string& table, const std::string& conf, const std::string& macron);
+   bool read(const std::string& table, const std::string& conf, const std::string& macron);
 
    //! convert phoneme
-   virtual bool convert(const std::string&, IConvertable&) const;
+   virtual bool convert(const std::string& enc, ConvertableList::iterator begin, ConvertableList::iterator end) const;
+
+   //! get sil string
+   virtual std::string getSilStr() const;
 
 private:
    //! copy constructor (don't use)
