@@ -48,7 +48,7 @@ emconfigure ./configure \
 
 # Compile Sinsy
 emmake make -j$(nproc) \
-  LDFLAGS="-L$INSTALL_DIR/lib -s EXPORTED_FUNCTIONS=[_main] -s EXPORTED_RUNTIME_METHODS=[FS,callMain] -s DISABLE_EXCEPTION_CATCHING=0 -s ALLOW_MEMORY_GROWTH=1 -s INVOKE_RUN=0 --preload-file dic@/dic --preload-file voices@/voices --preload-file scores@/scores"
+  LDFLAGS="-L$INSTALL_DIR/lib -s EXPORTED_FUNCTIONS=[_main] -s EXPORTED_RUNTIME_METHODS=[FS,callMain] -s DISABLE_EXCEPTION_CATCHING=0 -s ALLOW_MEMORY_GROWTH=1 -s INVOKE_RUN=0 --preload-file /content/build_space/sinsy/dic@/dic --preload-file /content/build_space/sinsy/voices@/voices --preload-file /content/build_space/sinsy/scores@/scores"
 
 # Rename output to .js if needed
 if [ -f bin/sinsy ] && [ ! -f bin/sinsy.js ]; then
