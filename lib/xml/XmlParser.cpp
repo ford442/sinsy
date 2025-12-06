@@ -125,7 +125,7 @@ XmlData* createXmlData(const std::string& tag, const std::string& data = "")
 {
    size_t idx = findFirstOfBlank(tag);
    if (0 == idx) {
-      StreamException("createXmlData() no tag");
+      throw StreamException(std::string("createXmlData() no tag: ") + tag);
    }
    if (std::string::npos == idx) { // no attributres
       return new XmlData(tag);
@@ -137,11 +137,12 @@ XmlData* createXmlData(const std::string& tag, const std::string& data = "")
       size_t at(tag.find('=', idx)); // search '='
       if (std::string::npos == at) {
          delete ret;
-         throw StreamException("createXmlData() '=' is not exist");
+         ERR_MSG("Malformed tag: " << tag);
+           throw StreamException(std::string("createXmlData() '=' is not exist for tag: ") + tag);
       }
       if (at == idx) {
          delete ret;
-         throw StreamException("createXmlData() '=' is at the head of tag");
+         throw StreamException(std::string("createXmlData() '=' is at the head of tag: ") + tag);
       }
       std::string key(tag.substr(idx, at - idx)); // cut up to '='
       cutBlanks(key);
@@ -154,7 +155,7 @@ XmlData* createXmlData(const std::string& tag, const std::string& data = "")
          quotation = tag[idx];
       } else {
          delete ret;
-         throw StreamException("xml attribute value needs \" or \'");
+           throw StreamException(std::string("xml attribute value needs ' or \" for tag: ") + tag);
       }
       ++idx;
       size_t start(idx);
@@ -164,7 +165,7 @@ XmlData* createXmlData(const std::string& tag, const std::string& data = "")
          idx = tag.find(quotation, idx);
          if (std::string::npos == idx) {
             delete ret;
-            throw StreamException("xml attribute value needs \" or \'");
+              throw StreamException(std::string("xml attribute value needs terminating quote for tag: ") + tag);
          }
          // last ' or " following \ should be ignored
          if ((start != idx) || ('\\' != tag[idx - 1])) {
